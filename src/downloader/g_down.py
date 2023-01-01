@@ -5,7 +5,7 @@ from oauth2client.client import GoogleCredentials
 import subprocess
 # download_with_pydrive = True 
 
-class Downloader(object):
+class g_down(object):
     def __init__(self, use_pydrive):
         self.use_pydrive = use_pydrive
         current_directory = os.getcwd()
