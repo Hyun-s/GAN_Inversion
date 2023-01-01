@@ -2,7 +2,7 @@ from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from google.colab import auth
 from oauth2client.client import GoogleCredentials
-
+import subprocess
 download_with_pydrive = True 
 
 class Downloader(object):
@@ -30,6 +30,7 @@ class Downloader(object):
             downloaded.FetchMetadata(fetch_all=True)
             downloaded.GetContentFile(file_dst)
         else:
-            !gdown --id $file_id -O $file_dst
+            subprocess.run(!gdown --id $file_id -O $file_dst)
+            
 
 downloader = Downloader(download_with_pydrive)
