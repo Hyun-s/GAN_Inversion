@@ -29,5 +29,5 @@ class g_down(object):
             downloaded.FetchMetadata(fetch_all=True)
             downloaded.GetContentFile(file_dst)
         else:
-            subprocess.run(!gdown --id $file_id -O $file_dst)
+            subprocess.run('!gdown --id '+file_id+ '-O '+file_dst')
             
