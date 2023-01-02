@@ -9,7 +9,7 @@ class g_down(object):
     def __init__(self, use_pydrive):
         self.use_pydrive = use_pydrive
         current_directory = os.getcwd()
-        self.save_dir = os.path.join(os.path.dirname(current_directory), CODE_DIR, "pretrained_models")
+        self.save_dir = os.path.join(os.path.dirname(current_directory), "pretrained_models")
         os.makedirs(self.save_dir, exist_ok=True)
         if self.use_pydrive:
             self.authenticate()
