@@ -5,6 +5,6 @@ e4e = {
     "church_encode": {"id": "1-L0ZdnQLwtdy6-A_Ccgq5uNJGTqE7qBa", "name": "e4e_church_encode.pt"}
 }
 
-style_gan{
+style_gan = {
     "ffhq_f":{"id": "1EM87UquaoQmk17Q8d5kYIAHqu0dkYqdT". "name": "stylegan2-ffhq-config-f.pt"}
 }
