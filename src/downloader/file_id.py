@@ -6,5 +6,5 @@ e4e = {
 }
 
 style_gan = {
-    "ffhq_f":{"id": "1EM87UquaoQmk17Q8d5kYIAHqu0dkYqdT". "name": "stylegan2-ffhq-config-f.pt"}
+    "ffhq_f":{"id": "1EM87UquaoQmk17Q8d5kYIAHqu0dkYqdT", "name": "stylegan2-ffhq-config-f.pt"}
 }
