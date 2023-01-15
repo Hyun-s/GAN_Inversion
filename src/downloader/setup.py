@@ -3,7 +3,7 @@ from downloader import file_id
 import os, subprocess
 
 use_pydrive = False
-use_colab = True
+use_colab = False
 downloader = g_down(use_pydrive=False)
 
 ffhq_f = file_id.style_gan['ffhq_f']
@@ -21,4 +21,6 @@ def set_ninja():
     results = []
     for command in command_list:
         result = subprocess.call(command, shell=True)
-    
+
+if use_colab:
+    set_ninja()
