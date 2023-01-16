@@ -8,3 +8,7 @@ e4e = {
 style_gan = {
     "ffhq_f":{"id": "1EM87UquaoQmk17Q8d5kYIAHqu0dkYqdT", "name": "stylegan2-ffhq-config-f.pt"}
 }
+
+dataset = {
+    "celebA_mask":{"id":"1nHCI2Dy8XDM3vpU90OYmcUPX0hy9X1jR", "name":"CelebAMask-HQ.zip"}
+}
