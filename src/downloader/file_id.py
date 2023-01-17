@@ -9,6 +9,14 @@ style_gan = {
     "ffhq_f":{"id": "1EM87UquaoQmk17Q8d5kYIAHqu0dkYqdT", "name": "stylegan2-ffhq-config-f.pt"}
 }
 
+IR_SE_50 = {
+    "irse":{"id":'1KW7bjndL3QG3sxBbZxreGHigcCCpsDgn',"name":"model_ir_se50.pth"}
+}
+moco ={
+    "moco":{"id":"18rLcNGdteX5LwT7sv_F7HWr12HpVEzVe", "name":"moco_v2_800ep_pretrain.pt"}
+
+}
+
 dataset = {
     "celebA_mask":{"id":"1nHCI2Dy8XDM3vpU90OYmcUPX0hy9X1jR", "name":"CelebAMask-HQ.zip"}
 }
