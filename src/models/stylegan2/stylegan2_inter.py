@@ -65,22 +65,22 @@ class Generator_inter(Generator):
         # # 
         # if use_f:
 
-        else:
-            i = 1
-            for conv1, conv2, noise1, noise2, to_rgb in zip(
-                    self.convs[::2], self.convs[1::2], noise[1::2], noise[2::2], self.to_rgbs
-            ):
-                out = conv1(out, latent[:, i], noise=noise1)
-                out = conv2(out, latent[:, i + 1], noise=noise2)
-                skip = to_rgb(out, latent[:, i + 2], skip)
-                if intermediate_out != False:
-                    if intermediate_out == i:
-                        inter_out_image = skip
-                    
+        # else:
+        i = 1
+        for conv1, conv2, noise1, noise2, to_rgb in zip(
+                self.convs[::2], self.convs[1::2], noise[1::2], noise[2::2], self.to_rgbs
+        ):
+            out = conv1(out, latent[:, i], noise=noise1)
+            out = conv2(out, latent[:, i + 1], noise=noise2)
+            skip = to_rgb(out, latent[:, i + 2], skip)
+            if intermediate_out != False:
+                if intermediate_out == i:
+                    inter_out_image = skip
+                
 
-                i += 2
+            i += 2
 
-            image = skip
+        image = skip
 
         if return_latents:
             return image, latent
