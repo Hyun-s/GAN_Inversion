@@ -3,8 +3,8 @@ from models.stylegan2.model import Generator
 
 
 class Generator_inter(Generator):
-    def __init__():
-        super().__init__()
+    # def __init__():
+    #     super().__init__()
     def forward(
             self,
             styles,
