@@ -20,7 +20,7 @@ class Generator_inter(Generator):
             style_dim,
             upsample,
             blur_kernel=[1, 3, 3, 1],
-            demodulate,)
+            demodulate)
     def forward(
             self,
             styles,
