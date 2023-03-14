@@ -3,8 +3,24 @@ from models.stylegan2.model import Generator
 
 
 class Generator_inter(Generator):
-    # def __init__():
-    #     super().__init__()
+    def __init__(
+            self,
+            in_channel,
+            out_channel,
+            kernel_size,
+            style_dim,
+            upsample=False,
+            blur_kernel=[1, 3, 3, 1],
+            demodulate=True,):
+        super().__init__(
+            self,
+            in_channel,
+            out_channel,
+            kernel_size,
+            style_dim,
+            upsample,
+            blur_kernel=[1, 3, 3, 1],
+            demodulate,)
     def forward(
             self,
             styles,
