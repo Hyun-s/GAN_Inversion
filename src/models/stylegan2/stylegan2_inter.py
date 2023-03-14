@@ -1,4 +1,4 @@
-from model import Generator
+from models.stylegan2.model import Generator
 
 
 
