@@ -13,13 +13,13 @@ class Generator_inter(Generator):
             blur_kernel=[1, 3, 3, 1],
             demodulate=True,):
         super().__init__(
-            in_channel,
-            out_channel,
-            kernel_size,
-            style_dim,
-            upsample,
-            blur_kernel=[1, 3, 3, 1],
-            demodulate)
+            in_channel=in_channel,
+            out_channel=out_channel,
+            kernel_size=kernel_size,
+            style_dim=style_dim,
+            upsample=upsample,
+            blur_kernel=blur_kernel,
+            demodulate=demodulate)
     def forward(
             self,
             styles,
