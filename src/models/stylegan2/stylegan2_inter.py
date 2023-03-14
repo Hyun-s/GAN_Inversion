@@ -13,7 +13,6 @@ class Generator_inter(Generator):
             blur_kernel=[1, 3, 3, 1],
             demodulate=True,):
         super().__init__(
-            self,
             in_channel,
             out_channel,
             kernel_size,
