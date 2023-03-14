@@ -5,21 +5,19 @@ from models.stylegan2.model import Generator
 class Generator_inter(Generator):
     def __init__(
             self,
-            in_channel,
-            out_channel,
-            kernel_size,
+            size,
             style_dim,
-            upsample=False,
+            n_mlp,
+            channel_multiplier=2,
             blur_kernel=[1, 3, 3, 1],
-            demodulate=True,):
+            lr_mlp=0.01,):
         super().__init__(
-            in_channel=in_channel,
-            out_channel=out_channel,
-            kernel_size=kernel_size,
+            size=size,
             style_dim=style_dim,
-            upsample=upsample,
+            n_mlp=n_mlp,
+            channel_multiplier=channel_multiplier,
             blur_kernel=blur_kernel,
-            demodulate=demodulate)
+            lr_mlp=lr_mlp)
     def forward(
             self,
             styles,
