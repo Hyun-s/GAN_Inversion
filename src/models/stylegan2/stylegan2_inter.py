@@ -29,9 +29,10 @@ class Generator_inter(Generator):
             input_is_latent=False,
             noise=None,
             randomize_noise=True,
-            use_f=True,
+            use_f=False,
             intermediate_out=False
     ):
+    # use_f to start layer
         if not input_is_latent:
             styles = [self.style(s) for s in styles]
 
@@ -76,24 +77,36 @@ class Generator_inter(Generator):
         skip = self.to_rgb1(out, latent[:, 1])
 
         # # 
-        # if use_f:
+        if use_f != False:
+            i = use_f
+            for conv1, conv2, noise1, noise2, to_rgb in list(zip(
+                    self.convs[::2], self.convs[1::2], noise[1::2], noise[2::2], self.to_rgbs
+            ))[i:]:
+                out = conv1(out, latent[:, i], noise=noise1)
+                out = conv2(out, latent[:, i + 1], noise=noise2)
+                skip = to_rgb(out, latent[:, i + 2], skip)
+                if intermediate_out != False:
+                    if intermediate_out == i:
+                        inter_out_image = skip
+                    
 
-        # else:
-        i = 1
-        for conv1, conv2, noise1, noise2, to_rgb in zip(
-                self.convs[::2], self.convs[1::2], noise[1::2], noise[2::2], self.to_rgbs
-        ):
-            out = conv1(out, latent[:, i], noise=noise1)
-            out = conv2(out, latent[:, i + 1], noise=noise2)
-            skip = to_rgb(out, latent[:, i + 2], skip)
-            if intermediate_out != False:
-                if intermediate_out == i:
-                    inter_out_image = skip
-                
+                i += 2
+        else:
+            i = 1
+            for conv1, conv2, noise1, noise2, to_rgb in zip(
+                    self.convs[::2], self.convs[1::2], noise[1::2], noise[2::2], self.to_rgbs
+            ):
+                out = conv1(out, latent[:, i], noise=noise1)
+                out = conv2(out, latent[:, i + 1], noise=noise2)
+                skip = to_rgb(out, latent[:, i + 2], skip)
+                if intermediate_out != False:
+                    if intermediate_out == i:
+                        inter_out_image = skip
+                    
 
-            i += 2
+                i += 2
 
-        image = skip
+            image = skip
 
         if return_latents:
             return image, latent
