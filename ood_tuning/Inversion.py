@@ -9,7 +9,7 @@ import random
 import lpips
 import torch
 import torch.nn as nn
-import pandas ad pd
+import pandas as pd
 
 from tqdm import tqdm
 
