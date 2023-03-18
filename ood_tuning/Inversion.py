@@ -180,7 +180,8 @@ class BDInvert():
                 'basecode':basecode_save,
                 'detailcode':detailcode_save
             }
-            if not save_dir:
+            if save_dir != False:
+                print('saving')
                 file_id = os.path.splitext(image_id)
                 save_path = os.path.join(save_dir,file_id)
                 os.makedirs(save_path, exist_ok=True)
@@ -200,5 +201,5 @@ class BDInvert():
                 # origin image(path), image_o f, wm+
 
         df = pd.DataFrame(save_csv)
-        df.to_csv(os.path.join(save_path,'paths.csv'), index=False)
+        df.to_csv(os.path.join(save_dir,'paths.csv'), index=False)
         return df
