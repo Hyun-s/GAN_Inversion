@@ -200,5 +200,5 @@ class BDInvert():
                 # origin image(path), image_o f, wm+
 
         df = pd.DataFrame(save_csv)
-        df.to_csv(os.path.join(save_dir,'paths.csv'), index=False)
+        df.to_csv(os.path.join(save_path,'paths.csv'), index=False)
         return df
