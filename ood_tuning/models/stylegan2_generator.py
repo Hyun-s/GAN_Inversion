@@ -171,27 +171,33 @@ class StyleGAN2Generator(nn.Module):
                 trunc_psi=None,
                 trunc_layers=None,
                 randomize_noise=False,
+                use_f=None,
+                use_wp=None,
                 **_unused_kwargs):
-        mapping_results = self.mapping(z, label)
-        w = mapping_results['w']
+        if use_f != None and use_wp != None:
+            synthesis_results = self.synthesis(wp=use_wp,basecode=use_f,randomize_noise)
+            return synthesis_results
+        else:
+            mapping_results = self.mapping(z, label)
+            w = mapping_results['w']
 
-        if self.training and w_moving_decay < 1:
-            batch_w_avg = all_gather(w).mean(dim=0)
-            self.truncation.w_avg.copy_(
-                self.truncation.w_avg * w_moving_decay +
-                batch_w_avg * (1 - w_moving_decay))
+            if self.training and w_moving_decay < 1:
+                batch_w_avg = all_gather(w).mean(dim=0)
+                self.truncation.w_avg.copy_(
+                    self.truncation.w_avg * w_moving_decay +
+                    batch_w_avg * (1 - w_moving_decay))
 
-        if self.training and style_mixing_prob > 0:
-            new_z = torch.randn_like(z)
-            new_w = self.mapping(new_z, label)['w']
-            if np.random.uniform() < style_mixing_prob:
-                mixing_cutoff = np.random.randint(1, self.num_layers)
-                w = self.truncation(w)
-                new_w = self.truncation(new_w)
-                w[:, :mixing_cutoff] = new_w[:, :mixing_cutoff]
+            if self.training and style_mixing_prob > 0:
+                new_z = torch.randn_like(z)
+                new_w = self.mapping(new_z, label)['w']
+                if np.random.uniform() < style_mixing_prob:
+                    mixing_cutoff = np.random.randint(1, self.num_layers)
+                    w = self.truncation(w)
+                    new_w = self.truncation(new_w)
+                    w[:, :mixing_cutoff] = new_w[:, :mixing_cutoff]
 
-        wp = self.truncation(w, trunc_psi, trunc_layers)
-        synthesis_results = self.synthesis(wp, randomize_noise)
+            wp = self.truncation(w, trunc_psi, trunc_layers)
+            synthesis_results = self.synthesis(wp, randomize_noise)
 
         return {**mapping_results, **synthesis_results}
 
