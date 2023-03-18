@@ -168,7 +168,7 @@ class BDInvert():
                 loss.backward()
                 optimizer.step()
 
-            x_rec = self.generator.synthesis(detailcode, randomize_noise=args.randomize_noise,
+            x_rec = self.generator.synthesis(detailcode, randomize_noise=self.args.randomize_noise,
                                         basecode_layer=basecode_layer, basecode=basecode)['image']
             rec_image = postprocess(x_rec.clone())[0]
             basecode_save = basecode.clone().detach().cpu().numpy()
