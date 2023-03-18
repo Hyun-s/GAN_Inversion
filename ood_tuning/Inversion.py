@@ -185,16 +185,16 @@ class BDInvert():
                 file_id = os.path.splitext(image_id)[0]
                 save_path = os.path.join(save_dir,file_id)
                 os.makedirs(save_path, exist_ok=True)
-                tup = {'Image path': os.path.join(save_path,file_id),
-                       'Image_rec path': os.path.join(save_path,file_id+'_rec.png'),
-                       'f path': os.path.join(save_path,file_id+'_f.npy'),
-                       'w_m_plus path': os.path.join(save_path,file_id+'_w_m_plus.npy')}
+                tup = {'Image_path': os.path.join(save_path,file_id),
+                       'Image_rec_path': os.path.join(save_path,file_id+'_rec.png'),
+                       'f_path': os.path.join(save_path,file_id+'_f.npy'),
+                       'w_m_plus_path': os.path.join(save_path,file_id+'_w_m_plus.npy')}
                 
 
                 shutil.copy(path, tup['Image_path'])
-                cv2.imwrite(tup['Image_rec path'],rec_image)
+                cv2.imwrite(tup['Image_rec_path'],rec_image)
                 np.save(tup['f_path'], basecode_save)
-                np.save(tup['w_m_plus'], detailcode_save)
+                np.save(tup['w_m_plus_path'], detailcode_save)
                 
                 save_csv.append(tup)
 
