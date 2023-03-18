@@ -537,7 +537,7 @@ class SynthesisModule(nn.Module):
                             image = temp
                         else:
                             image = temp + self.upsample(image)
-                            results[f'{layer_idx} image'] = image
+                            results[f'rgb{layer_idx-1}'] = image
 
         elif self.architecture == 'resnet':
             x, style = self.layer0(x)
