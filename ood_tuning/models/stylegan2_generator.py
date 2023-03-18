@@ -175,7 +175,9 @@ class StyleGAN2Generator(nn.Module):
                 use_wp=None,
                 **_unused_kwargs):
         if use_f != None and use_wp != None:
-            synthesis_results = self.synthesis(wp=use_wp,basecode=use_f,randomize_noise)
+            synthesis_results = self.synthesis(wp=use_wp,
+                                               basecode=use_f,
+                                               randomize_noise=randomize_noise)
             return synthesis_results
         else:
             mapping_results = self.mapping(z, label)
