@@ -171,12 +171,14 @@ class StyleGAN2Generator(nn.Module):
                 trunc_psi=None,
                 trunc_layers=None,
                 randomize_noise=False,
+                basecode_layer=None,
                 use_f=None,
                 use_wp=None,
                 **_unused_kwargs):
-        if use_f != None and use_wp != None:
+        if (use_f != None and use_wp != None) and basecode_layer !=None:
             synthesis_results = self.synthesis(wp=use_wp,
                                                basecode=use_f,
+                                               basecode_layer=basecode_layer,
                                                randomize_noise=randomize_noise)
             return synthesis_results
         else:
@@ -201,7 +203,7 @@ class StyleGAN2Generator(nn.Module):
             wp = self.truncation(w, trunc_psi, trunc_layers)
             synthesis_results = self.synthesis(wp, randomize_noise)
 
-        return {**mapping_results, **synthesis_results}
+            return {**mapping_results, **synthesis_results}
 
 
 class MappingModule(nn.Module):
