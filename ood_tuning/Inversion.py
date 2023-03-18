@@ -108,7 +108,7 @@ class BDInvert():
         lpips_fn = lpips.LPIPS(net='vgg').cuda()
         lpips_fn.net.requires_grad_(False)
         dic = defaultdict(dict)
-        for path in image_paths:
+        for idx, path in enumerate(image_paths):
             image_id = os.path.split(path)[-1]
             target,target_resized = self.load_image(path)
             # Generate starting detail codes
@@ -166,12 +166,13 @@ class BDInvert():
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
-
-            x_rec = self.generator.synthesis(detailcode, randomize_noise=self.args.randomize_noise,
-                                        basecode_layer=basecode_layer, basecode=basecode)['image']
-            rec_image = postprocess(x_rec.clone())[0]
-            basecode_save = basecode.clone().detach().cpu().numpy()
-            detailcode_save = detailcode.clone().detach().cpu().numpy()
+                
+            with torch.no_grad():
+                x_rec = self.generator.synthesis(detailcode, randomize_noise=self.args.randomize_noise,
+                                            basecode_layer=basecode_layer, basecode=basecode)['image']
+                rec_image = postprocess(x_rec.clone())[0]
+                basecode_save = basecode.clone().detach().cpu().numpy()
+                detailcode_save = detailcode.clone().detach().cpu().numpy()
 
             dic[image_id] ={
                 'x_rec':target,
@@ -180,8 +181,8 @@ class BDInvert():
                 'detailcode':detailcode_save
             }
             if self.save_dir != False:
-                print('saving')
                 file_id = os.path.splitext(image_id)[0]
+                print(str(idx)+ ' : '+image_id+' saving')
                 save_path = os.path.join(self.save_dir,file_id)
                 os.makedirs(save_path, exist_ok=True)
                 tup = {'Image_path': os.path.join(save_path,image_id),
