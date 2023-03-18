@@ -94,12 +94,12 @@ class BDInvert():
                image_paths):
         # target,target_resize = self.load_image(path)
         save_csv = []
-        if not self.save_dir:
-            save_image_path = os.path.join(self.save_dir,'Image_o')
-            save_F_path = os.path.join(self.save_dir,'F')
-            save_w_m_plus_path = os.path.join(self.save_dir,'w_m_plus')
+        if not self.args.save_dir:
+            save_image_path = os.path.join(self.args.save_dir,'Image_o')
+            save_F_path = os.path.join(self.args.save_dir,'F')
+            save_w_m_plus_path = os.path.join(self.args.save_dir,'w_m_plus')
             
-            os.makedirs(self.save_dir, exist_ok=True)
+            os.makedirs(self.args.save_dir, exist_ok=True)
             os.makedirs(save_image_path, exist_ok=True)
             os.makedirs(save_F_path, exist_ok=True)
             os.makedirs(save_w_m_plus_path, exist_ok=True)
@@ -166,7 +166,7 @@ class BDInvert():
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
-                
+
             with torch.no_grad():
                 x_rec = self.generator.synthesis(detailcode, randomize_noise=self.args.randomize_noise,
                                             basecode_layer=basecode_layer, basecode=basecode)['image']
@@ -180,10 +180,10 @@ class BDInvert():
                 'basecode':basecode_save,
                 'detailcode':detailcode_save
             }
-            if self.save_dir != False:
+            if self.args.save_dir != False:
                 file_id = os.path.splitext(image_id)[0]
                 print(str(idx)+ ' : '+image_id+' saving')
-                save_path = os.path.join(self.save_dir,file_id)
+                save_path = os.path.join(self.args.save_dir,file_id)
                 os.makedirs(save_path, exist_ok=True)
                 tup = {'Image_path': os.path.join(save_path,image_id),
                        'Image_rec_path': os.path.join(save_path,file_id+'_rec.png'),
@@ -201,5 +201,5 @@ class BDInvert():
                 # origin image(path), image_o f, wm+
 
         df = pd.DataFrame(save_csv)
-        df.to_csv(os.path.join(self.save_dir,'paths.csv'), index=False)
+        df.to_csv(os.path.join(self.args.save_dir,'paths.csv'), index=False)
         return df
