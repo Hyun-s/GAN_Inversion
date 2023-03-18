@@ -182,7 +182,7 @@ class BDInvert():
             }
             if save_dir != False:
                 print('saving')
-                file_id = os.path.splitext(image_id)
+                file_id = os.path.splitext(image_id)[0]
                 save_path = os.path.join(save_dir,file_id)
                 os.makedirs(save_path, exist_ok=True)
                 tup = {'Image path': os.path.join(save_path,file_id),
