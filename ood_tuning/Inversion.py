@@ -185,7 +185,7 @@ class BDInvert():
                 file_id = os.path.splitext(image_id)[0]
                 save_path = os.path.join(save_dir,file_id)
                 os.makedirs(save_path, exist_ok=True)
-                tup = {'Image_path': os.path.join(save_path,file_id),
+                tup = {'Image_path': os.path.join(save_path,image_id),
                        'Image_rec_path': os.path.join(save_path,file_id+'_rec.png'),
                        'f_path': os.path.join(save_path,file_id+'_f.npy'),
                        'w_m_plus_path': os.path.join(save_path,file_id+'_w_m_plus.npy')}
