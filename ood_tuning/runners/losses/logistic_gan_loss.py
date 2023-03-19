@@ -4,6 +4,10 @@
 import torch
 import numpy as np
 import torch.nn.functional as F
+from models.stylegan2_generator import UpsamplingLayer
+from models.stylegan2_discriminator import DownsamplingLayer
+from torch.nn import MSELoss
+import lpips
 
 __all__ = ['LogisticGANLoss']
 
@@ -20,9 +24,20 @@ class LogisticGANLoss(object):
         self.g_loss_kwargs = g_loss_kwargs or dict()
         self.r1_gamma = self.d_loss_kwargs.get('r1_gamma', 10.0)
         self.r2_gamma = self.d_loss_kwargs.get('r2_gamma', 0.0)
+        self.mse =  MSELoss()
+        self.lpips_fn = lpips.LPIPS(net='vgg').cuda()
+        self.lpips_fn.net.requires_grad_(False)
+
 
         runner.running_stats.add(
             f'g_loss', log_format='.3f', log_strategy='AVERAGE')
+        runner.running_stats.add(
+            f'recon_loss', log_format='.3f', log_strategy='AVERAGE')  
+        runner.running_stats.add(
+            f'reg_loss', log_format='.3f', log_strategy='AVERAGE')  
+        runner.running_stats.add(
+            f'inter_loss', log_format='.3f', log_strategy='AVERAGE')  
+        
         runner.running_stats.add(
             f'd_loss', log_format='.3f', log_strategy='AVERAGE')
         if self.r1_gamma != 0:
@@ -93,6 +108,32 @@ class LogisticGANLoss(object):
                 real_grad_penalty * (self.r1_gamma * 0.5) +
                 fake_grad_penalty * (self.r2_gamma * 0.5))
 
+
+
+    def intermediate_loss(self, image_k, image_out, image):
+        scale_factor = image_out.shape[2] / image_k.shape[2]
+        scale_factor = int(scale_factor)
+
+        upsample = UpsamplingLayer(scale_factor=2**5).to(device)
+        downsample = DownsamplingLayer(scale_factor=2**5)
+
+        diff = image_out - upsample(image_k)
+        low_image = downsample(image - diff)
+
+        return self.mse(image_k,low_image)
+
+    def reconstruction_loss(self, x_rec, image):
+        # TODO lambda recon to args
+        lambda_recon = 0.01
+
+        x_rec_resized = torch.nn.functional.interpolate(x_rec, size=(256,256), mode='bicubic')
+        target_resized = torch.nn.functional.interpolate(image, size=(256,256), mode='bicubic')
+        lpips_loss = torch.mean(self.lpips_fn(target_resized, x_rec_resized))
+        
+        mse_loss = self.mse(x_rec,image)
+
+        return mse_loss + lambda_recon*lpips_loss
+
     def g_loss(self, runner, data):  # pylint: disable=no-self-use
         """Computes loss for generator."""
         # TODO: Use random labels.
@@ -101,11 +142,41 @@ class LogisticGANLoss(object):
         batch_size = data['image'].shape[0]
         labels = data.get('label', None)
 
-        latents = torch.randn(batch_size, runner.z_space_dim).cuda()
-        fakes = G(latents, label=labels, **runner.G_kwargs_train)['image']
-        fake_scores = D(fakes, label=labels, **runner.D_kwargs_train)
+        # TODO params to args
+        inter_out = 5
+        lambda_reg = 0.1
+        lambda_inter = 0.2
+        
 
-        g_loss = F.softplus(-fake_scores).mean()
+        latents = torch.randn(batch_size, runner.z_space_dim).cuda()
+        out = G(latents, label=labels, **runner.G_kwargs_train)
+
+        
+        image_origin = data['image']
+        image_first_recon = data['first_recon'] # todo
+        image_rec = out['image']
+        inter = out[f'rgb{inter_out}']
+
+        # Reconstruction Loss
+        recon_loss = self.reconstruction_loss(image_rec, image_origin)
+
+        # Regularization Loss
+        reg_recon_loss = self.reconstruction_loss(image_rec, image_first_recon)
+
+        fake_scores = D(image_rec, label=labels, **runner.D_kwargs_train)
+        adv_loss = F.softplus(-fake_scores).mean()
+        reg_loss = reg_recon_loss + adv_loss
+
+        # Intermediate Loss
+        inter_loss = self.intermediate_loss(inter, image, image_origin)
+        
+        g_loss = recon_loss + lambda_reg*reg_loss + lambda_inter*inter_loss
+
+
+
         runner.running_stats.update({'g_loss': g_loss.item()})
+        runner.running_stats.update({'recon_loss': recon_loss.item()})
+        runner.running_stats.update({'reg_loss': reg_loss.item()})
+        runner.running_stats.update({'inter_loss': inter_loss.item()})
 
         return g_loss

@@ -225,3 +225,61 @@ class BaseDataset(Dataset):
         data.update({'image': image})
 
         return data
+
+import os
+import pandas as pd
+import cv2
+from torchvision.io import read_image
+from torch.utils.data import Dataset
+from torch.utils.data import DataLoader
+from BDInvert.image_tools import *
+import numpy as np
+
+class CustomImageDataset(Dataset):
+    def __init__(self, meta_csv_path, res, transform=None, target_transform=None):
+        self.meta_csv = pd.read_csv(meta_csv_path)
+        self.transform = transform
+        self.target_transform = target_transform
+        self.resolution = res
+
+    def __len__(self):
+        return len(self.meta_csv)
+
+    def load_image(self,img_path):
+        image = cv2.imread(img_path)
+        image_target = torch.from_numpy(preprocess(image[np.newaxis, :], channel_order='BGR')) # torch_tensor, -1~1, RGB, BCHW
+        image_target = torch.squeeze(image_target)
+        if image.shape[0] != self.resolution:
+            image_target = Lanczos_resizing(image_target, (self.resolution,self.resolution))
+        # image_target_resized = Lanczos_resizing(image_target, (256,256))
+
+        target = image_target.clone()
+        # target_resized = image_target_resized.clone()
+        return target
+
+    def __getitem__(self, idx):
+        img_path = self.meta_csv.iloc[idx]['Image_path']
+        recon_path = self.meta_csv.iloc[idx]['Image_rec_path']
+        basecode_path = self.meta_csv.iloc[idx]['f_path']
+        detailcode_path = self.meta_csv.iloc[idx]['w_m_plus_path']
+        basecode = np.load
+
+        image = self.load_image(img_path)
+        first_recon = self.load_image(recon_path)
+
+
+        basecode = np.load(basecode_path)
+        detailcode = np.load(detailcode_path)
+        basecode = torch.from_numpy(basecode)
+        detailcode = torch.from_numpy(detailcode)
+        if self.transform:
+            image = self.transform(image)
+            first_recon = self.transform(first_recon)
+
+        dic = {
+            'image':image,
+            'first_recon':first_recon,
+            'basecode':basecode,
+            'detailcode':detailcode
+        }
+        return dic
