@@ -171,7 +171,7 @@ class BDInvert():
                 x_rec = self.generator.synthesis(detailcode, randomize_noise=self.args.randomize_noise,
                                             basecode_layer=basecode_layer, basecode=basecode)['image']
                 rec_image = postprocess(x_rec.clone())[0]
-                basecode_save = basecode.clone().detach().cpu().numpy()
+                basecode_save = basecode.clone().squeeze().detach().cpu().numpy()
                 detailcode_save = detailcode.clone().squeeze().detach().cpu().numpy()
 
             dic[image_id] ={
