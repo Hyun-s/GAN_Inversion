@@ -27,11 +27,11 @@ data = dict(
 
 controllers = dict(
     RunningLogger=dict(every_n_iters=10),
-    # ProgressScheduler=dict(
-    #     every_n_iters=1, init_res=8, minibatch_repeats=4,
-    #     lod_training_img=60, lod_transition_img=60,
-    #     batch_size_schedule=dict(res4=64, res8=32, res16=16, res32=8),
-    # ),
+    ProgressScheduler=dict(
+        every_n_iters=1, init_res=1024, minibatch_repeats=4,
+        lod_training_img=60, lod_transition_img=60,
+        batch_size_schedule=dict(res4=64, res8=32, res16=16, res32=8),
+    ),
     # Snapshoter=dict(every_n_iters=500, first_iter=True, num=200),
     # FIDEvaluator=dict(every_n_iters=5000, first_iter=True, num=50000),
     Checkpointer=dict(every_n_iters=2, first_iter=True),
