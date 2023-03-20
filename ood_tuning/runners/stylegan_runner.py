@@ -31,9 +31,9 @@ class StyleGANRunner(BaseGANRunner):
         G = self.get_module(self.models['generator'])
         D = self.get_module(self.models['discriminator'])
         Gs = self.get_module(self.models['generator_smooth'])
-        G.synthesis.lod.data.fill_(self.lod)
-        D.lod.data.fill_(self.lod)
-        Gs.synthesis.lod.data.fill_(self.lod)
+        # G.synthesis.lod.data.fill_(self.lod)
+        # D.lod.data.fill_(self.lod)
+        # Gs.synthesis.lod.data.fill_(self.lod)
 
         # Update discriminator.
         self.set_model_requires_grad('discriminator', True)
