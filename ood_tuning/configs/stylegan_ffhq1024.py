@@ -8,8 +8,8 @@ and `num_workers`.
 runner_type = 'StyleGANRunner'
 gan_type = 'stylegan2'
 resolution = 1024
-batch_size = 1
-val_batch_size = 1
+batch_size = 2
+val_batch_size = 2
 total_img = 50
 
 # Training dataset is repeated at the beginning to avoid loading dataset
