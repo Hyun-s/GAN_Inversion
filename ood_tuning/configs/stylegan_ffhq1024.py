@@ -8,20 +8,20 @@ and `num_workers`.
 runner_type = 'StyleGANRunner'
 gan_type = 'stylegan2'
 resolution = 1024
-batch_size = 4
-val_batch_size = 16
-total_img = 25000_000
+batch_size = 1
+val_batch_size = 1
+total_img = 50
 
 # Training dataset is repeated at the beginning to avoid loading dataset
 # repeatedly at the end of each epoch. This can save some I/O time.
 data = dict(
-    num_workers=4,
-    repeat=500,
+    num_workers=1,
+    repeat=10,
     # train=dict(root_dir='data/ffhq', resolution=resolution, mirror=0.5),
     # val=dict(root_dir='data/ffhq', resolution=resolution),
-    train=dict(root_dir='data/ffhq.zip', data_format='zip',
+    train=dict(root_dir='/content/BDinver_5iter_train/paths.csv',
                resolution=resolution, mirror=0.5),
-    val=dict(root_dir='data/ffhq.zip', data_format='zip',
+    val=dict(root_dir='/content/BDinver_5iter_val/paths.csv',
              resolution=resolution),
 )
 
@@ -29,12 +29,12 @@ controllers = dict(
     RunningLogger=dict(every_n_iters=10),
     ProgressScheduler=dict(
         every_n_iters=1, init_res=8, minibatch_repeats=4,
-        lod_training_img=600_000, lod_transition_img=600_000,
+        lod_training_img=60, lod_transition_img=60,
         batch_size_schedule=dict(res4=64, res8=32, res16=16, res32=8),
     ),
-    Snapshoter=dict(every_n_iters=500, first_iter=True, num=200),
-    FIDEvaluator=dict(every_n_iters=5000, first_iter=True, num=50000),
-    Checkpointer=dict(every_n_iters=5000, first_iter=True),
+    # Snapshoter=dict(every_n_iters=500, first_iter=True, num=200),
+    # FIDEvaluator=dict(every_n_iters=5000, first_iter=True, num=50000),
+    Checkpointer=dict(every_n_iters=2, first_iter=True),
 )
 
 modules = dict(
