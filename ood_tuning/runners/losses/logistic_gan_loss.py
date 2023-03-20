@@ -77,7 +77,6 @@ class LogisticGANLoss(object):
         """Computes loss for discriminator."""
         G = runner.models['generator']
         D = runner.models['discriminator']
-        print(data['image'].shape)
         reals = self.preprocess_image(data['image'])
         reals.requires_grad = True
         labels = data.get('label', None)

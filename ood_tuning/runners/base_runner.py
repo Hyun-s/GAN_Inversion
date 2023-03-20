@@ -62,6 +62,7 @@ class BaseRunner(object):
 
         self.batch_size = self.config.batch_size
         self.val_batch_size = self.config.get('val_batch_size', self.batch_size)
+        print('batch is ',self.batch_size)
         self._iter = 0
         self._start_iter = 0
         self.seen_img = 0
