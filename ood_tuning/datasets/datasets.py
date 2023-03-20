@@ -240,7 +240,9 @@ class BaseDataset(Dataset):
                  root_dir,
                  resolution=1024,
                  transform=None,
-                 target_transform=None):
+                 target_transform=None,
+                 data_format='csv',
+                 **_unused_kwargs):
         self.meta_csv = pd.read_csv(root_dir)
         self.transform = transform
         self.target_transform = target_transform
