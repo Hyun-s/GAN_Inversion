@@ -175,7 +175,7 @@ class BDInvert():
                 detailcode_save = detailcode.clone().detach().cpu().numpy()
 
             dic[image_id] ={
-                'rec_image':rec_image.detach().cpu(),
+                'rec_image':rec_image,
                 'basecode':basecode_save,
                 'detailcode':detailcode_save
             }
