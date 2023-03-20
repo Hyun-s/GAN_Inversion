@@ -172,7 +172,7 @@ class BDInvert():
                                             basecode_layer=basecode_layer, basecode=basecode)['image']
                 rec_image = postprocess(x_rec.clone())[0]
                 basecode_save = basecode.clone().detach().cpu().numpy()
-                detailcode_save = detailcode.clone().detach().cpu().numpy()
+                detailcode_save = detailcode.clone().squeeze().detach().cpu().numpy()
 
             dic[image_id] ={
                 'rec_image':rec_image,
