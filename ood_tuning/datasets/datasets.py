@@ -253,8 +253,8 @@ class BaseDataset(Dataset):
         image = cv2.imread(img_path)
         image_target = torch.from_numpy(preprocess(image[np.newaxis, :], channel_order='BGR')) # torch_tensor, -1~1, RGB, BCHW
         image_target = torch.squeeze(image_target)
-        if image.shape[0] != self.resolution:
-            image_target = Lanczos_resizing(image_target, (self.resolution,self.resolution))
+        # if image.shape[0] != self.resolution:
+        #     image_target = Lanczos_resizing(image_target, (self.resolution,self.resolution))
         # image_target_resized = Lanczos_resizing(image_target, (256,256))
 
         target = image_target.clone()
@@ -267,12 +267,12 @@ class BaseDataset(Dataset):
         basecode_path = self.meta_csv.iloc[idx]['f_path']
         detailcode_path = self.meta_csv.iloc[idx]['w_m_plus_path']
 
-        image = self.load_image(img_path)
-        first_recon = self.load_image(recon_path)
-
-
         basecode = np.load(basecode_path)
         detailcode = np.load(detailcode_path)
+
+
+        image = self.load_image(img_path)
+        first_recon = self.load_image(recon_path)
         basecode = torch.from_numpy(basecode)
         detailcode = torch.from_numpy(detailcode)
         if self.transform:
