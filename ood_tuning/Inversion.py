@@ -109,7 +109,6 @@ class BDInvert():
         lpips_fn.net.requires_grad_(False)
         dic = defaultdict(dict)
         for idx, path in enumerate(image_paths):
-            torch.cuda.empty_cache()
             image_id = os.path.split(path)[-1]
             target,target_resized = self.load_image(path)
             # Generate starting detail codes
@@ -198,7 +197,8 @@ class BDInvert():
                 np.save(tup['w_m_plus_path'], detailcode_save)
                 
                 save_csv.append(tup)
-
+            del(x_rec,basecode,detailcode)
+            torch.cuda.empty_cache()
                 # origin image(path), image_o f, wm+
 
         df = pd.DataFrame(save_csv)
