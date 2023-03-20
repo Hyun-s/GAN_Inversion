@@ -175,8 +175,7 @@ class BDInvert():
                 detailcode_save = detailcode.clone().detach().cpu().numpy()
 
             dic[image_id] ={
-                'x_rec':target,
-                'rec_image':rec_image,
+                'rec_image':rec_image.detach().cpu(),
                 'basecode':basecode_save,
                 'detailcode':detailcode_save
             }
@@ -197,7 +196,7 @@ class BDInvert():
                 np.save(tup['w_m_plus_path'], detailcode_save)
                 
                 save_csv.append(tup)
-            del(x_rec,basecode,detailcode)
+            del(x_rec,basecode,detailcode,loss,target,target_resized)
             torch.cuda.empty_cache()
                 # origin image(path), image_o f, wm+
 
