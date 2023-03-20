@@ -95,136 +95,136 @@ class LmdbLoader(object):
         return image
 
 
-class BaseDataset(Dataset):
-    """Defines the base dataset class.
+# class BaseDataset(Dataset):
+#     """Defines the base dataset class.
 
-    This class supports loading data from a full-of-image folder, a lmdb
-    database, or an image list. Images will be pre-processed based on the given
-    `transform` function before fed into the data loader.
+#     This class supports loading data from a full-of-image folder, a lmdb
+#     database, or an image list. Images will be pre-processed based on the given
+#     `transform` function before fed into the data loader.
 
-    NOTE: The loaded data will be returned as a directory, where there must be
-    a key `image`.
-    """
-    def __init__(self,
-                 root_dir,
-                 resolution,
-                 data_format='dir',
-                 image_list_path=None,
-                 mirror=0.0,
-                 progressive_resize=True,
-                 crop_resize_resolution=-1,
-                 transform=normalize_image,
-                 transform_kwargs=None,
-                 **_unused_kwargs):
-        """Initializes the dataset.
+#     NOTE: The loaded data will be returned as a directory, where there must be
+#     a key `image`.
+#     """
+#     def __init__(self,
+#                  root_dir,
+#                  resolution,
+#                  data_format='dir',
+#                  image_list_path=None,
+#                  mirror=0.0,
+#                  progressive_resize=True,
+#                  crop_resize_resolution=-1,
+#                  transform=normalize_image,
+#                  transform_kwargs=None,
+#                  **_unused_kwargs):
+#         """Initializes the dataset.
 
-        Args:
-            root_dir: Root directory containing the dataset.
-            resolution: The resolution of the returned image.
-            data_format: Format the dataset is stored. Supports `dir`, `lmdb`,
-                and `list`. (default: `dir`)
-            image_list_path: Path to the image list. This field is required if
-                `data_format` is `list`. (default: None)
-            mirror: The probability to do mirror augmentation. (default: 0.0)
-            progressive_resize: Whether to resize images progressively.
-                (default: True)
-            crop_resize_resolution: The resolution of the output after crop
-                and resize. (default: -1)
-            transform: The transform function for pre-processing.
-                (default: `datasets.transforms.normalize_image()`)
-            transform_kwargs: The additional arguments for the `transform`
-                function. (default: None)
+#         Args:
+#             root_dir: Root directory containing the dataset.
+#             resolution: The resolution of the returned image.
+#             data_format: Format the dataset is stored. Supports `dir`, `lmdb`,
+#                 and `list`. (default: `dir`)
+#             image_list_path: Path to the image list. This field is required if
+#                 `data_format` is `list`. (default: None)
+#             mirror: The probability to do mirror augmentation. (default: 0.0)
+#             progressive_resize: Whether to resize images progressively.
+#                 (default: True)
+#             crop_resize_resolution: The resolution of the output after crop
+#                 and resize. (default: -1)
+#             transform: The transform function for pre-processing.
+#                 (default: `datasets.transforms.normalize_image()`)
+#             transform_kwargs: The additional arguments for the `transform`
+#                 function. (default: None)
 
-        Raises:
-            ValueError: If the input `data_format` is not supported.
-            NotImplementedError: If the input `data_format` is not implemented.
-        """
-        if data_format.lower() not in _FORMATS_ALLOWED:
-            raise ValueError(f'Invalid data format `{data_format}`!\n'
-                             f'Supported formats: {_FORMATS_ALLOWED}.')
+#         Raises:
+#             ValueError: If the input `data_format` is not supported.
+#             NotImplementedError: If the input `data_format` is not implemented.
+#         """
+#         if data_format.lower() not in _FORMATS_ALLOWED:
+#             raise ValueError(f'Invalid data format `{data_format}`!\n'
+#                              f'Supported formats: {_FORMATS_ALLOWED}.')
 
-        self.root_dir = root_dir
-        self.resolution = resolution
-        self.data_format = data_format.lower()
-        self.image_list_path = image_list_path
-        self.mirror = np.clip(mirror, 0.0, 1.0)
-        self.progressive_resize = progressive_resize
-        self.crop_resize_resolution = crop_resize_resolution
-        self.transform = transform
-        self.transform_kwargs = transform_kwargs or dict()
+#         self.root_dir = root_dir
+#         self.resolution = resolution
+#         self.data_format = data_format.lower()
+#         self.image_list_path = image_list_path
+#         self.mirror = np.clip(mirror, 0.0, 1.0)
+#         self.progressive_resize = progressive_resize
+#         self.crop_resize_resolution = crop_resize_resolution
+#         self.transform = transform
+#         self.transform_kwargs = transform_kwargs or dict()
 
-        if self.data_format == 'dir':
-            self.image_paths = sorted(os.listdir(self.root_dir))
-            self.num_samples = len(self.image_paths)
-        elif self.data_format == 'lmdb':
-            lmdb_file = LmdbLoader.get_lmdbfile(self.root_dir)
-            self.num_samples = lmdb_file['num_samples']
-        elif self.data_format == 'list':
-            self.metas = []
-            assert os.path.isfile(self.image_list_path)
-            with open(self.image_list_path) as f:
-                for line in f:
-                    fields = line.rstrip().split(' ')
-                    if len(fields) == 1:
-                        self.metas.append((fields[0], None))
-                    else:
-                        assert len(fields) == 2
-                        self.metas.append((fields[0], int(fields[1])))
-            self.num_samples = len(self.metas)
-        elif self.data_format == 'zip':
-            zip_file = ZipLoader.get_zipfile(self.root_dir)
-            image_paths = [f for f in zip_file.namelist()
-                           if ('.jpg' in f or '.jpeg' in f or '.png' in f)]
-            self.image_paths = sorted(image_paths)
-            self.num_samples = len(self.image_paths)
-        else:
-            raise NotImplementedError(f'Not implemented data format '
-                                      f'`{self.data_format}`!')
+#         if self.data_format == 'dir':
+#             self.image_paths = sorted(os.listdir(self.root_dir))
+#             self.num_samples = len(self.image_paths)
+#         elif self.data_format == 'lmdb':
+#             lmdb_file = LmdbLoader.get_lmdbfile(self.root_dir)
+#             self.num_samples = lmdb_file['num_samples']
+#         elif self.data_format == 'list':
+#             self.metas = []
+#             assert os.path.isfile(self.image_list_path)
+#             with open(self.image_list_path) as f:
+#                 for line in f:
+#                     fields = line.rstrip().split(' ')
+#                     if len(fields) == 1:
+#                         self.metas.append((fields[0], None))
+#                     else:
+#                         assert len(fields) == 2
+#                         self.metas.append((fields[0], int(fields[1])))
+#             self.num_samples = len(self.metas)
+#         elif self.data_format == 'zip':
+#             zip_file = ZipLoader.get_zipfile(self.root_dir)
+#             image_paths = [f for f in zip_file.namelist()
+#                            if ('.jpg' in f or '.jpeg' in f or '.png' in f)]
+#             self.image_paths = sorted(image_paths)
+#             self.num_samples = len(self.image_paths)
+#         else:
+#             raise NotImplementedError(f'Not implemented data format '
+#                                       f'`{self.data_format}`!')
 
-    def __len__(self):
-        return self.num_samples
+#     def __len__(self):
+#         return self.num_samples
 
-    def __getitem__(self, idx):
-        data = dict()
+#     def __getitem__(self, idx):
+#         data = dict()
 
-        # Load data.
-        if self.data_format == 'dir':
-            # TODO: support turbo-jpeg backend
-            image_path = self.image_paths[idx]
-            image = cv2.imread(os.path.join(self.root_dir, image_path))
-        elif self.data_format == 'lmdb':
-            image = LmdbLoader.get_image(self.root_dir, idx)
-        elif self.data_format == 'list':
-            image_path, label = self.metas[idx]
-            image = cv2.imread(os.path.join(self.root_dir, image_path))
-            label = None if label is None else torch.LongTensor(label)
-            data.update({'label': label})
-        elif self.data_format == 'zip':
-            image_path = self.image_paths[idx]
-            image = ZipLoader.get_image(self.root_dir, image_path)
-        else:
-            raise NotImplementedError(f'Not implemented data format '
-                                      f'`{self.data_format}`!')
+#         # Load data.
+#         if self.data_format == 'dir':
+#             # TODO: support turbo-jpeg backend
+#             image_path = self.image_paths[idx]
+#             image = cv2.imread(os.path.join(self.root_dir, image_path))
+#         elif self.data_format == 'lmdb':
+#             image = LmdbLoader.get_image(self.root_dir, idx)
+#         elif self.data_format == 'list':
+#             image_path, label = self.metas[idx]
+#             image = cv2.imread(os.path.join(self.root_dir, image_path))
+#             label = None if label is None else torch.LongTensor(label)
+#             data.update({'label': label})
+#         elif self.data_format == 'zip':
+#             image_path = self.image_paths[idx]
+#             image = ZipLoader.get_image(self.root_dir, image_path)
+#         else:
+#             raise NotImplementedError(f'Not implemented data format '
+#                                       f'`{self.data_format}`!')
 
-        image = image[:, :, ::-1]  # Converts BGR (cv2) to RGB.
+#         image = image[:, :, ::-1]  # Converts BGR (cv2) to RGB.
 
-        # Transform image.
-        if self.crop_resize_resolution > 0:
-            image = crop_resize_image(image, self.crop_resize_resolution)
-        if self.progressive_resize:
-            image = progressive_resize_image(image, self.resolution)
-        image = image.transpose(2, 0, 1).astype(np.float32)
-        if np.random.uniform() < self.mirror:
-            image = image[:, :, ::-1]  # CHW
-        image = torch.FloatTensor(image.copy())
-        if not self.progressive_resize:
-            image = resize_image(image, self.resolution)
+#         # Transform image.
+#         if self.crop_resize_resolution > 0:
+#             image = crop_resize_image(image, self.crop_resize_resolution)
+#         if self.progressive_resize:
+#             image = progressive_resize_image(image, self.resolution)
+#         image = image.transpose(2, 0, 1).astype(np.float32)
+#         if np.random.uniform() < self.mirror:
+#             image = image[:, :, ::-1]  # CHW
+#         image = torch.FloatTensor(image.copy())
+#         if not self.progressive_resize:
+#             image = resize_image(image, self.resolution)
 
-        if self.transform is not None:
-            image = self.transform(image, **self.transform_kwargs)
-        data.update({'image': image})
+#         if self.transform is not None:
+#             image = self.transform(image, **self.transform_kwargs)
+#         data.update({'image': image})
 
-        return data
+#         return data
 
 import os
 import pandas as pd
@@ -235,12 +235,16 @@ from torch.utils.data import DataLoader
 from BDInvert.image_tools import *
 import numpy as np
 
-class CustomImageDataset(Dataset):
-    def __init__(self, meta_csv_path, res, transform=None, target_transform=None):
-        self.meta_csv = pd.read_csv(meta_csv_path)
+class BaseDataset(Dataset):
+    def __init__(self, 
+                 root_dir,
+                 resolution=1024,
+                 transform=None,
+                 target_transform=None):
+        self.meta_csv = pd.read_csv(root_dir)
         self.transform = transform
         self.target_transform = target_transform
-        self.resolution = res
+        self.resolution = resolution
 
     def __len__(self):
         return len(self.meta_csv)
