@@ -82,7 +82,7 @@ class LogisticGANLoss(object):
         labels = data.get('label', None)
 
         latents = torch.randn(reals.shape[0], runner.z_space_dim).cuda()
-        print(latents.shape, reals.shape)
+        # print(latents.shape, reals.shape)
         latents.requires_grad = True
         # TODO: Use random labels.
         fakes = G(latents, label=labels, **runner.G_kwargs_train)['image']
@@ -168,7 +168,7 @@ class LogisticGANLoss(object):
         reg_loss = reg_recon_loss + adv_loss
 
         # Intermediate Loss
-        inter_loss = self.intermediate_loss(inter, image, image_origin)
+        inter_loss = self.intermediate_loss(inter, image_rec, image_origin)
         
         g_loss = recon_loss + lambda_reg*reg_loss + lambda_inter*inter_loss
 

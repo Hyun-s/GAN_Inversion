@@ -273,14 +273,15 @@ class BaseRunner(object):
         self.logger.info(f'Start training.')
         if self.total_iters == 0:
             total_epochs = self.config.get('total_epochs', 0)
+            print('total epoch:',total_epochs)
             self.total_iters = self.convert_epoch_to_iter(total_epochs)
         assert self.total_iters > 0
         while self.iter < self.total_iters:
             self._iter += 1
             self.pre_execute_controllers()
             data_batch = next(self.train_loader)
-            print(data_batch.keys())
-            print(data_batch['image'].shape)
+            # print(data_batch.keys())
+            # print(data_batch['image'].shape)
             self.timer.pre_execute(self)
             for key in data_batch:
                 assert data_batch[key].shape[0] == self.batch_size
