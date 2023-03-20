@@ -82,6 +82,7 @@ class LogisticGANLoss(object):
         labels = data.get('label', None)
 
         latents = torch.randn(reals.shape[0], runner.z_space_dim).cuda()
+        print(latents.shape, reals.shape)
         latents.requires_grad = True
         # TODO: Use random labels.
         fakes = G(latents, label=labels, **runner.G_kwargs_train)['image']
