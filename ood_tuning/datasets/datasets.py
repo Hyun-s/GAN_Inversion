@@ -266,7 +266,6 @@ class BaseDataset(Dataset):
         recon_path = self.meta_csv.iloc[idx]['Image_rec_path']
         basecode_path = self.meta_csv.iloc[idx]['f_path']
         detailcode_path = self.meta_csv.iloc[idx]['w_m_plus_path']
-        basecode = np.load
 
         image = self.load_image(img_path)
         first_recon = self.load_image(recon_path)
