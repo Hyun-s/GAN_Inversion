@@ -520,6 +520,7 @@ class SynthesisModule(nn.Module):
             results[f'output_style{layer_idx // 2}'] = style
         elif self.architecture == 'skip':
             for layer_idx in range(self.num_layers - 1):
+                print(f'layer{layer_idx}',x.shape,wp[:,layer_idx].shape)
                 x, style = self.__getattr__(f'layer{layer_idx}')(x, wp[:, layer_idx], randomize_noise)
                 results[f'x{layer_idx:02d}'] = x
                 results[f'style{layer_idx:02d}'] = style
