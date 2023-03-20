@@ -62,7 +62,6 @@ class BaseRunner(object):
 
         self.batch_size = self.config.batch_size
         self.val_batch_size = self.config.get('val_batch_size', self.batch_size)
-        print('batch is ',self.batch_size)
         self._iter = 0
         self._start_iter = 0
         self.seen_img = 0
@@ -280,6 +279,8 @@ class BaseRunner(object):
             self._iter += 1
             self.pre_execute_controllers()
             data_batch = next(self.train_loader)
+            print(data_batch.keys())
+            print(data_batch['image'].shape)
             self.timer.pre_execute(self)
             for key in data_batch:
                 assert data_batch[key].shape[0] == self.batch_size
