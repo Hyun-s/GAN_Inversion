@@ -109,6 +109,7 @@ class BDInvert():
         lpips_fn.net.requires_grad_(False)
         dic = defaultdict(dict)
         for idx, path in enumerate(image_paths):
+            torch.cuda.empty_cache()
             image_id = os.path.split(path)[-1]
             target,target_resized = self.load_image(path)
             # Generate starting detail codes
