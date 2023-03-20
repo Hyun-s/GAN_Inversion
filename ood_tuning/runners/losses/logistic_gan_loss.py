@@ -85,7 +85,13 @@ class LogisticGANLoss(object):
         # print(latents.shape, reals.shape)
         latents.requires_grad = True
         # TODO: Use random labels.
-        fakes = G(latents, label=labels, **runner.G_kwargs_train)['image']
+
+        f = data['basecode'].cuda()
+        wp = data['detailcode'].cuda()
+        fakes = G(z=None,use_wp=wp,use_f=f,basecode_layer='x03',**runner.G_kwargs_train)['image']
+        
+        # fakes = G(latents, label=labels, **runner.G_kwargs_train)['image']
+
         real_scores = D(reals, label=labels, **runner.D_kwargs_train)
         fake_scores = D(fakes, label=labels, **runner.D_kwargs_train)
 
@@ -114,8 +120,8 @@ class LogisticGANLoss(object):
         scale_factor = image_out.shape[2] / image_k.shape[2]
         scale_factor = int(scale_factor)
 
-        upsample = UpsamplingLayer(scale_factor=2**5).to(device)
-        downsample = DownsamplingLayer(scale_factor=2**5)
+        upsample = UpsamplingLayer(scale_factor=2**5).cuda()
+        downsample = DownsamplingLayer(scale_factor=2**5).cuda()
 
         diff = image_out - upsample(image_k)
         low_image = downsample(image - diff)
@@ -149,8 +155,12 @@ class LogisticGANLoss(object):
         
 
         latents = torch.randn(batch_size, runner.z_space_dim).cuda()
-        out = G(latents, label=labels, **runner.G_kwargs_train)
+        # out = G(latents, label=labels, **runner.G_kwargs_train)
 
+        f = data['basecode'].cuda()
+        wp = data['detailcode'].cuda()
+
+        out = G(z=None,use_wp=wp,use_f=f,basecode_layer='x03',**runner.G_kwargs_train)
         
         image_origin = data['image']
         image_first_recon = data['first_recon'] # todo
