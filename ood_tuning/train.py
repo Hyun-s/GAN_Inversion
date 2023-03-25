@@ -65,6 +65,7 @@ def main():
     config.seed = args.seed
     config.launcher = args.launcher
     config.backend = args.backend
+    config.d_fixed = args.d_fixed
 
     # Set CUDNN.
     config.cudnn_benchmark = config.get('cudnn_benchmark', True)
