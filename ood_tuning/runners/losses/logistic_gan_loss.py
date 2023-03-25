@@ -169,7 +169,7 @@ class LogisticGANLoss(object):
         image_origin = data['image']
         image_first_recon = data['first_recon'] # todo
         image_rec = out['image']
-        inter = out[f'rgb{inter_out}']
+        inter = out[f'rgb{self.inter_out}']
 
         # Reconstruction Loss
         recon_loss = self.reconstruction_loss(image_rec, image_origin)
