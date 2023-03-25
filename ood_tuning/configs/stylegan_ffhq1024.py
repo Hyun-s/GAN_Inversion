@@ -10,7 +10,7 @@ gan_type = 'stylegan2'
 resolution = 1024
 batch_size = 2
 val_batch_size = 2
-total_img = 50
+total_img = 150
 
 # Training dataset is repeated at the beginning to avoid loading dataset
 # repeatedly at the end of each epoch. This can save some I/O time.
@@ -19,9 +19,9 @@ data = dict(
     repeat=10,
     # train=dict(root_dir='data/ffhq', resolution=resolution, mirror=0.5),
     # val=dict(root_dir='data/ffhq', resolution=resolution),
-    train=dict(root_dir='/content/BDinver_5iter_train/paths.csv',
+    train=dict(root_dir='/content/train.csv',
                resolution=resolution, mirror=0.5),
-    val=dict(root_dir='/content/BDinver_5iter_val/paths.csv',
+    val=dict(root_dir='/content/val.csv',
              resolution=resolution),
 )
 
@@ -59,5 +59,11 @@ modules = dict(
 loss = dict(
     type='LogisticGANLoss',
     d_loss_kwargs=dict(r1_gamma=10.0),
-    g_loss_kwargs=dict(),
+    # define losses
+    g_loss_kwargs=dict(inter_out = 5,
+                       lambda_recon = 0.8,
+                       lambda_mse = 1.,
+                       lambda_reg = 0.5,
+                       lambda_inter = 1.
+    ),
 )
