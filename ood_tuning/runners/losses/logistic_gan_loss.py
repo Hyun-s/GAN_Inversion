@@ -127,8 +127,8 @@ class LogisticGANLoss(object):
         scale_factor = image_out.shape[2] / image_k.shape[2]
         scale_factor = int(scale_factor)
 
-        upsample = UpsamplingLayer(scale_factor=2**5).cuda()
-        downsample = DownsamplingLayer(scale_factor=2**5).cuda()
+        upsample = UpsamplingLayer(scale_factor=scale_factor).cuda()
+        downsample = DownsamplingLayer(scale_factor=scale_factor).cuda()
 
         diff = image_out - upsample(image_k)
         low_image = downsample(image - diff)
