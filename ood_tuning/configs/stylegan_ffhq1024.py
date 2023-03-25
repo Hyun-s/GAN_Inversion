@@ -11,10 +11,8 @@ resolution = 1024
 batch_size = 2
 val_batch_size = 2
 
-epochs = 300
-num_img = len(pd.read_csv('/content/train.csv'))
-
-total_img = int(num_img/batch_size)*epochs
+# epochs = total_img / num of data
+total_img = 150
 
 # Training dataset is repeated at the beginning to avoid loading dataset
 # repeatedly at the end of each epoch. This can save some I/O time.
