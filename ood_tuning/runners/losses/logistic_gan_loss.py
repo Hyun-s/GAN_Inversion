@@ -24,6 +24,13 @@ class LogisticGANLoss(object):
         self.g_loss_kwargs = g_loss_kwargs or dict()
         self.r1_gamma = self.d_loss_kwargs.get('r1_gamma', 10.0)
         self.r2_gamma = self.d_loss_kwargs.get('r2_gamma', 0.0)
+
+        self.inter_out = self.g_loss_kwargs.get('inter_out', 7)
+        self.lambda_recon = self.g_loss_kwargs.get('lambda_recon', 0.8)
+        self.lambda_mse = self.g_loss_kwargs.get('lambda_mse', 1.0)
+        self.lambda_reg = self.g_loss_kwargs.get('lambda_reg', 0.5)
+        self.lambda_inter = self.g_loss_kwargs.get('lambda_inter', 1.0)
+
         self.mse =  MSELoss()
         self.lpips_fn = lpips.LPIPS(net='vgg').cuda()
         self.lpips_fn.net.requires_grad_(False)
@@ -130,7 +137,6 @@ class LogisticGANLoss(object):
 
     def reconstruction_loss(self, x_rec, image):
         # TODO lambda recon to args
-        lambda_recon = 0.01
 
         x_rec_resized = torch.nn.functional.interpolate(x_rec, size=(256,256), mode='bicubic')
         target_resized = torch.nn.functional.interpolate(image, size=(256,256), mode='bicubic')
@@ -138,7 +144,7 @@ class LogisticGANLoss(object):
         
         mse_loss = self.mse(x_rec,image)
 
-        return mse_loss + lambda_recon*lpips_loss
+        return self.lambda_mse*mse_loss + self.lambda_recon*lpips_loss
 
     def g_loss(self, runner, data):  # pylint: disable=no-self-use
         """Computes loss for generator."""
@@ -149,9 +155,7 @@ class LogisticGANLoss(object):
         labels = data.get('label', None)
 
         # TODO params to args
-        inter_out = 5
-        lambda_reg = 0.1
-        lambda_inter = 0.2
+
         
 
         latents = torch.randn(batch_size, runner.z_space_dim).cuda()
@@ -180,7 +184,7 @@ class LogisticGANLoss(object):
         # Intermediate Loss
         inter_loss = self.intermediate_loss(inter, image_rec, image_origin)
         
-        g_loss = recon_loss + lambda_reg*reg_loss + lambda_inter*inter_loss
+        g_loss = recon_loss + self.lambda_reg*reg_loss + self.lambda_inter*inter_loss
 
 
 
