@@ -39,7 +39,7 @@ class StyleGANRunner(BaseGANRunner):
         self.set_model_requires_grad('discriminator', True)
         self.set_model_requires_grad('generator', False)
 
-        if self.d_fixed:
+        if self.config.d_fixed:
             d_loss = self.loss.d_loss(self, data)
             self.optimizers['discriminator'].zero_grad()
             d_loss.backward()
