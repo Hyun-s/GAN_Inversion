@@ -175,15 +175,19 @@ class LogisticGANLoss(object):
         recon_loss = self.reconstruction_loss(image_rec, image_origin)
 
         # Regularization Loss
-        reg_recon_loss = self.reconstruction_loss(image_rec, image_first_recon)
+        if self.lambda_reg > 0:
+            reg_recon_loss = self.reconstruction_loss(image_rec, image_first_recon)
 
-        fake_scores = D(image_rec, label=labels, **runner.D_kwargs_train)
-        adv_loss = F.softplus(-fake_scores).mean()
-        reg_loss = reg_recon_loss + adv_loss
-
+            fake_scores = D(image_rec, label=labels, **runner.D_kwargs_train)
+            adv_loss = F.softplus(-fake_scores).mean()
+            reg_loss = reg_recon_loss + adv_loss
+        else:
+            reg_loss = 0
         # Intermediate Loss
-        inter_loss = self.intermediate_loss(inter, image_rec, image_origin)
-        
+        if self.lambda_inter > 0:
+            inter_loss = self.intermediate_loss(inter, image_rec, image_origin)
+        else:    
+            inter_loss = 0
         g_loss = recon_loss + self.lambda_reg*reg_loss + self.lambda_inter*inter_loss
 
 

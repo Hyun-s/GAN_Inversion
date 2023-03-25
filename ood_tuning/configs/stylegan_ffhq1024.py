@@ -4,13 +4,17 @@
 All settings are particularly used for one replica (GPU), such as `batch_size`
 and `num_workers`.
 """
-
+import pandas as pd
 runner_type = 'StyleGANRunner'
 gan_type = 'stylegan2'
 resolution = 1024
 batch_size = 2
 val_batch_size = 2
-total_img = 150
+
+epochs = 300
+num_img = len(pd.read_csv('/content/train.csv'))
+
+total_img = int(num_img/batch_size)*epochs
 
 # Training dataset is repeated at the beginning to avoid loading dataset
 # repeatedly at the end of each epoch. This can save some I/O time.
