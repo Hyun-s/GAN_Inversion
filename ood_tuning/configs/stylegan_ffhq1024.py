@@ -4,7 +4,6 @@
 All settings are particularly used for one replica (GPU), such as `batch_size`
 and `num_workers`.
 """
-import pandas as pd
 runner_type = 'StyleGANRunner'
 gan_type = 'stylegan2'
 resolution = 1024
