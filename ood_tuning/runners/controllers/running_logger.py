@@ -141,6 +141,8 @@ class RunningLogger(BaseController):
                 elif name.startswith('lr_'):
                     self.tensorboard_writer.add_scalar(
                         name.replace('lr_', 'learning_rate/'), value)
+                elif name.startswith('image'):
+                    pass
                 else:
                     self.tensorboard_writer.add_scalar(name, value)
 
