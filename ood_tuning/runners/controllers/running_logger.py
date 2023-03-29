@@ -111,7 +111,7 @@ class RunningLogger(BaseController):
                             for k, v in log_data.items() \
                             if not k.startswith('image')
                             }
-                json.dump(log_data, f)
+                json.dump(log_json, f)
                 f.write('\n')
 
         if self.use_wandb:
