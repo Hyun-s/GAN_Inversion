@@ -205,5 +205,5 @@ class RunningStats(object):
     def __str__(self):
         """Gets log message."""
         self.log_order = self.log_order or list(self.stats_pool)
-        log_strings = [str(self.stats_pool[name]) for name in self.log_order if name.startswith('image')]
+        log_strings = [str(self.stats_pool[name]) for name in self.log_order if not name.startswith('image')]
         return self.log_delimiter.join(log_strings)

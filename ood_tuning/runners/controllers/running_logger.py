@@ -109,7 +109,7 @@ class RunningLogger(BaseController):
             with open(self._json_logpath, 'a+') as f:
                 log_json = {k: v \
                             for k, v in log_data.items() \
-                            if  k.startswith('image')
+                            if not k.startswith('image')
                             }
                 json.dump(log_json, f)
                 f.write('\n')
