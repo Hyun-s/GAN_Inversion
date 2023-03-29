@@ -27,7 +27,12 @@ data = dict(
 )
 
 controllers = dict(
-    RunningLogger=dict(every_n_iters=10),
+    RunningLogger=dict(every_n_iters=10,
+                       use_wandb=True,
+                       project='Out of Domain Inversion',
+                       entity='hyun-s',
+                       reinit=True,
+                       run_name='Test'),
     ProgressScheduler=dict(
         every_n_iters=1, init_res=1024, minibatch_repeats=4,
         lod_training_img=60, lod_transition_img=60,
@@ -37,7 +42,7 @@ controllers = dict(
     # FIDEvaluator=dict(every_n_iters=5000, first_iter=True, num=50000),
     Checkpointer=dict(every_n_iters=2, first_iter=True),
 )
-
+   
 modules = dict(
     discriminator=dict(
         model=dict(gan_type=gan_type, resolution=resolution),
