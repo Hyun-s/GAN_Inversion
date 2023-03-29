@@ -14,6 +14,8 @@ from torch.utils.tensorboard import SummaryWriter
 from ..misc import format_time
 from .base_controller import BaseController
 # pylint: enable=wrong-import-position
+import wandb
+from numpy as np
 
 __all__ = ['RunningLogger']
 
@@ -45,6 +47,19 @@ class RunningLogger(BaseController):
         self._tensorboard_format = config.get('tensorboard_format', True)
         self.tensorboard_writer = None
 
+
+        self.use_wandb = config.get('use_wandb', False)
+        if self.use_wandb:
+            self.project = config.get('project', 'Out of Domain Inversion')
+            self.entity = config.get('entity', 'hyun-s')
+            self.reinit = config.get('reinit', True)
+            self.run_name = config.get('run_name', 'Test')            
+            wandb.init(project=self.project,
+                       entity=self.entity, 
+                       reinit=self.reinit
+                       )
+            wandb.run.name = self.run_name
+
     def setup(self, runner):
         if self._text_format:
             runner.running_stats.log_order = self._log_order
@@ -59,6 +74,18 @@ class RunningLogger(BaseController):
     def close(self, runner):
         if self._tensorboard_format:
             self.tensorboard_writer.close()
+
+    def postprocess(self, images):
+        """Post-processes images from `torch.Tensor` to `numpy.ndarray`."""
+        # input : tensor, -1~1, RGB, BCHW
+        # output : np.uint8, 0~255, BGR, BHWC
+
+        images = images.detach().cpu().numpy()
+        images = (images + 1.) * 255. / 2.
+        images = np.clip(images + 0.5, 0, 255).astype(np.uint8)
+        images = images.transpose(0, 2, 3, 1)[:,:,:,[2,1,0]]
+        images = [wandb.Image(img) for img in images]
+        return images
 
     def execute_after_iteration(self, runner):
         # Prepare log data.
@@ -80,6 +107,22 @@ class RunningLogger(BaseController):
             with open(self._json_logpath, 'a+') as f:
                 json.dump(log_data, f)
                 f.write('\n')
+
+        if self.use_wandb:
+            dic = {}
+            for name, value in log_data.items():
+                if name in ['data_time', 'iter_time', 'run_time']:
+                    continue
+                
+                if name.startswith('loss_'):
+                    dic['loss/'] = value
+                elif name.startswith('lr_'):
+                    dic['learning_rate/'] = value
+                elif name.startswith('image'):
+                    dic[name] = self.postprocess(value)
+                else:
+                    dic[name] = value
+
 
         # Save in Tensorboard format.
         if self._tensorboard_format:

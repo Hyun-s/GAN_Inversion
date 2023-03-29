@@ -35,6 +35,10 @@ class LogisticGANLoss(object):
         self.lpips_fn = lpips.LPIPS(net='vgg').cuda()
         self.lpips_fn.net.requires_grad_(False)
 
+        runner.running_stats.add(
+            f'image_rec', log_format=False, log_strategy='AVERAGE')
+        runner.running_stats.add(
+            f'image_origin', log_format=False, log_strategy='AVERAGE')
 
         runner.running_stats.add(
             f'g_loss', log_format='.3f', log_strategy='AVERAGE')
@@ -191,7 +195,8 @@ class LogisticGANLoss(object):
         g_loss = recon_loss + self.lambda_reg*reg_loss + self.lambda_inter*inter_loss
 
 
-
+        runner.running_stats.update({'image_rec':image_rec.item()})
+        runner.running_stats.update({'image_origin':image_origin.item()})
         runner.running_stats.update({'g_loss': g_loss.item()})
         runner.running_stats.update({'recon_loss': recon_loss.item()})
         runner.running_stats.update({'reg_loss': reg_loss.item()})
