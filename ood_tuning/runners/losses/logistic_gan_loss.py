@@ -195,8 +195,8 @@ class LogisticGANLoss(object):
         g_loss = recon_loss + self.lambda_reg*reg_loss + self.lambda_inter*inter_loss
 
 
-        runner.running_stats.update({'image_rec':image_rec.item()})
-        runner.running_stats.update({'image_origin':image_origin.item()})
+        runner.running_stats.update({'image_rec':image_rec})
+        runner.running_stats.update({'image_origin':image_origin})
         runner.running_stats.update({'g_loss': g_loss.item()})
         runner.running_stats.update({'recon_loss': recon_loss.item()})
         runner.running_stats.update({'reg_loss': reg_loss.item()})
