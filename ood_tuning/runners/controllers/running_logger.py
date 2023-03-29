@@ -109,7 +109,7 @@ class RunningLogger(BaseController):
             with open(self._json_logpath, 'a+') as f:
                 log_json = {k: v \
                             for k, v in log_data.items() \
-                            if not k.startswith('image')
+                            if  k.startswith('image')
                             }
                 json.dump(log_json, f)
                 f.write('\n')
@@ -128,6 +128,7 @@ class RunningLogger(BaseController):
                     dic[name] = self.postprocess(value)
                 else:
                     dic[name] = value
+            wanb.log(dic)
 
 
         # Save in Tensorboard format.
