@@ -107,7 +107,7 @@ class RunningLogger(BaseController):
         # Save in JSON format.
         if self._json_format:
             with open(self._json_logpath, 'a+') as f:
-                log_json = {k, v \
+                log_json = {k: v \
                             for k, v in log_data.items() \
                             if not k.startswith('image')
                             }
