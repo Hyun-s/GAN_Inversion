@@ -7,3 +7,5 @@ tqdm==4.49.0
 rich
 easydict
 lpips
+gdown
+wget

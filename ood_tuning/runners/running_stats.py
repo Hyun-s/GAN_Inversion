@@ -116,7 +116,9 @@ class SingleStats(object):
 
     def __str__(self):
         """Gets log message."""
-        if self.log_format == 'time':
+        if self.log_format == False:
+            value_str = ''
+        elif self.log_format == 'time':
             value_str = f'{format_time(self.get_log_value())}'
         else:
             value_str = f'{self.get_log_value():{self.log_format}}'
@@ -203,5 +205,5 @@ class RunningStats(object):
     def __str__(self):
         """Gets log message."""
         self.log_order = self.log_order or list(self.stats_pool)
-        log_strings = [str(self.stats_pool[name]) for name in self.log_order]
+        log_strings = [str(self.stats_pool[name]) for name in self.log_order if name.startswith('image')]
         return self.log_delimiter.join(log_strings)

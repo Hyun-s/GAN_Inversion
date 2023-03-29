@@ -95,7 +95,7 @@ class RunningLogger(BaseController):
 
         # Save in text format.
         msg = f'Iter {runner.iter:6d}/{runner.total_iters:6d}'
-        print(type(runner.running_stats))
+        # print(type(runner.running_stats))
         msg += f', {runner.running_stats}'
         memory = torch.cuda.max_memory_allocated() / (1024 ** 3)
         msg += f' (memory: {memory:.1f}G)'
