@@ -91,10 +91,11 @@ class RunningLogger(BaseController):
         # Prepare log data.
         log_data = {name: stats.get_log_value()
                     for name, stats in runner.running_stats.stats_pool.items()}
+#[2023-03-29 08:59:52][INFO] Iter     30/    75, data time: 1.412s, iter time: 2.696s, run time:  1m49s, lr (discriminator): 3.0e-03, lr (generator): 3.0e-03, kimg:     0.1, lod: 0.00, minibatch:    2, g_loss: 0.690, recon_loss: 0.358, reg_loss: 0.384, inter_loss: 0.140, d_loss: 0.000, real_grad_penalty: 0.000, Gs_beta: 0.9999 (memory: 11.3G) (ETA:  2m01s)
 
         # Save in text format.
         msg = f'Iter {runner.iter:6d}/{runner.total_iters:6d}'
-        print(runner.running_stats)
+        print(type(runner.running_stats))
         msg += f', {runner.running_stats}'
         memory = torch.cuda.max_memory_allocated() / (1024 ** 3)
         msg += f' (memory: {memory:.1f}G)'
