@@ -15,7 +15,7 @@ from ..misc import format_time
 from .base_controller import BaseController
 # pylint: enable=wrong-import-position
 import wandb
-from numpy as np
+import numpy as np
 
 __all__ = ['RunningLogger']
 
