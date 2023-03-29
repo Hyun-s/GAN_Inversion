@@ -128,7 +128,7 @@ class RunningLogger(BaseController):
                     dic[name] = self.postprocess(value)
                 else:
                     dic[name] = value
-            wanb.log(dic)
+            wandb.log(dic)
 
 
         # Save in Tensorboard format.
