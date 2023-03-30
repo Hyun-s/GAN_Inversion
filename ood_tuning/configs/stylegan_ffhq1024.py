@@ -54,7 +54,7 @@ modules = dict(
     generator=dict(
         model=dict(gan_type=gan_type, resolution=resolution),
         lr=dict(lr_type='FIXED'),
-        opt=dict(opt_type='Adam', base_lr=1e-3, betas=(0.0, 0.99)),
+        opt=dict(opt_type='Adam', base_lr=1e-5, betas=(0.0, 0.99)),
         kwargs_train=dict(w_moving_decay=0.995, style_mixing_prob=0.9,
                           trunc_psi=1.0, trunc_layers=0, randomize_noise=True),
         kwargs_val=dict(trunc_psi=1.0, trunc_layers=0, randomize_noise=False),
@@ -71,5 +71,6 @@ loss = dict(
                        lambda_mse = 1.,
                        lambda_reg = 0.5,
                        lambda_inter = 1.
+                       lambda_adv = 0.01,
     ),
 )

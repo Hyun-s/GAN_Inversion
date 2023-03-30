@@ -30,6 +30,7 @@ class LogisticGANLoss(object):
         self.lambda_mse = self.g_loss_kwargs.get('lambda_mse', 1.0)
         self.lambda_reg = self.g_loss_kwargs.get('lambda_reg', 0.5)
         self.lambda_inter = self.g_loss_kwargs.get('lambda_inter', 1.0)
+        self.lambda_adv = self.g_loss_kwargs.get('lambda_adv', 1e-3)
 
         self.mse =  MSELoss()
         self.lpips_fn = lpips.LPIPS(net='vgg').cuda()
@@ -43,7 +44,9 @@ class LogisticGANLoss(object):
         runner.running_stats.add(
             f'g_loss', log_format='.3f', log_strategy='AVERAGE')
         runner.running_stats.add(
-            f'recon_loss', log_format='.3f', log_strategy='AVERAGE')  
+            f'mse_loss', log_format='.3f', log_strategy='AVERAGE')  
+        runner.running_stats.add(
+            f'lpipse_loss', log_format='.3f', log_strategy='AVERAGE')  
         runner.running_stats.add(
             f'reg_loss', log_format='.3f', log_strategy='AVERAGE')  
         runner.running_stats.add(
@@ -148,7 +151,7 @@ class LogisticGANLoss(object):
         
         mse_loss = self.mse(x_rec,image)
 
-        return self.lambda_mse*mse_loss + self.lambda_recon*lpips_loss
+        return mse_loss, lpips_loss
 
     def g_loss(self, runner, data):  # pylint: disable=no-self-use
         """Computes loss for generator."""
@@ -176,15 +179,19 @@ class LogisticGANLoss(object):
         inter = out[f'rgb{self.inter_out}']
 
         # Reconstruction Loss
-        recon_loss = self.reconstruction_loss(image_rec, image_origin)
+        mse_loss, lpips_loss = self.reconstruction_loss(image_rec, image_origin)
+        recon_loss = self.lambda_mse*mse_loss + self.lambda_recon*lpips_loss
 
         # Regularization Loss
         if self.lambda_reg > 0:
             reg_recon_loss = self.reconstruction_loss(image_rec, image_first_recon)
 
-            fake_scores = D(image_rec, label=labels, **runner.D_kwargs_train)
-            adv_loss = F.softplus(-fake_scores).mean()
-            reg_loss = reg_recon_loss + adv_loss
+            if self.lambda_adv > 0:
+                fake_scores = D(image_rec, label=labels, **runner.D_kwargs_train)
+                adv_loss = F.softplus(-fake_scores).mean()
+            else:
+                adv_loss = 0
+            reg_loss = reg_recon_loss + self.lambda_adv*adv_loss
         else:
             reg_loss = 0
         # Intermediate Loss
@@ -198,8 +205,15 @@ class LogisticGANLoss(object):
         runner.running_stats.update({'image_rec':image_rec})
         runner.running_stats.update({'image_origin':image_origin})
         runner.running_stats.update({'g_loss': g_loss.item()})
-        runner.running_stats.update({'recon_loss': recon_loss.item()})
+        
+        runner.running_stats.update({'mse_loss': mse_loss.item()})
+        runner.running_stats.update({'lpips_loss': lpips_loss.item()})
+
+
         runner.running_stats.update({'reg_loss': reg_loss.item()})
+        runner.running_stats.update({'reg_recon_loss': reg_recon_loss.item()})
+        runner.running_stats.update({'reg_adv_loss': adv_loss.item()})
+
         runner.running_stats.update({'inter_loss': inter_loss.item()})
 
         return g_loss
