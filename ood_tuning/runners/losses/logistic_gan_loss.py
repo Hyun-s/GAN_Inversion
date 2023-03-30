@@ -37,9 +37,9 @@ class LogisticGANLoss(object):
         self.lpips_fn.net.requires_grad_(False)
 
         runner.running_stats.add(
-            f'image_rec', log_format=False, log_strategy='AVERAGE')
+            f'image_rec', log_format=False, log_strategy='CURRENT')
         runner.running_stats.add(
-            f'image_origin', log_format=False, log_strategy='AVERAGE')
+            f'image_origin', log_format=False, log_strategy='CURRENT')
 
         runner.running_stats.add(
             f'g_loss', log_format='.3f', log_strategy='AVERAGE')
