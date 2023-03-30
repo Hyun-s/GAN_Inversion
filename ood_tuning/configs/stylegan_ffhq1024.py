@@ -70,7 +70,7 @@ loss = dict(
                        lambda_recon = 0.8,
                        lambda_mse = 1.,
                        lambda_reg = 0.5,
-                       lambda_inter = 1.
+                       lambda_inter = 1.,
                        lambda_adv = 1,
     ),
 )
