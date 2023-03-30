@@ -7,11 +7,11 @@ and `num_workers`.
 runner_type = 'StyleGANRunner'
 gan_type = 'stylegan2'
 resolution = 1024
-batch_size = 2
-val_batch_size = 2
+batch_size = 8
+val_batch_size = 8
 
 # epochs = total_img / num of data
-total_img = 150
+total_img = 800
 
 # Training dataset is repeated at the beginning to avoid loading dataset
 # repeatedly at the end of each epoch. This can save some I/O time.
@@ -40,7 +40,7 @@ controllers = dict(
     ),
     # Snapshoter=dict(every_n_iters=500, first_iter=True, num=200),
     # FIDEvaluator=dict(every_n_iters=5000, first_iter=True, num=50000),
-    Checkpointer=dict(every_n_iters=2, first_iter=True),
+    Checkpointer=dict(every_n_iters=10, first_iter=True),
 )
    
 modules = dict(
