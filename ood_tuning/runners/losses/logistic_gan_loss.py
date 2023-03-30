@@ -184,7 +184,8 @@ class LogisticGANLoss(object):
 
         # Regularization Loss
         if self.lambda_reg > 0:
-            reg_recon_loss = self.reconstruction_loss(image_rec, image_first_recon)
+            reg_mse_loss, reg_lpips_loss = self.reconstruction_loss(image_rec, image_first_recon)
+            reg_recon_loss = self.lambda_mse*reg_mse_loss + self.lambda_recon*reg_lpips_loss
 
             if self.lambda_adv > 0:
                 fake_scores = D(image_rec, label=labels, **runner.D_kwargs_train)
