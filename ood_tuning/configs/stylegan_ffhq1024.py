@@ -58,7 +58,7 @@ modules = dict(
         kwargs_train=dict(w_moving_decay=0.995, style_mixing_prob=0.9,
                           trunc_psi=1.0, trunc_layers=0, randomize_noise=False),
         kwargs_val=dict(trunc_psi=1.0, trunc_layers=0, randomize_noise=False),
-        g_smooth_img=0,
+        g_smooth_img=1,
     )
 )
 
