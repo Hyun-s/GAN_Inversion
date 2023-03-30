@@ -46,7 +46,7 @@ class LogisticGANLoss(object):
         runner.running_stats.add(
             f'mse_loss', log_format='.3f', log_strategy='AVERAGE')  
         runner.running_stats.add(
-            f'lpipse_loss', log_format='.3f', log_strategy='AVERAGE')  
+            f'lpips_loss', log_format='.3f', log_strategy='AVERAGE')  
         runner.running_stats.add(
             f'reg_loss', log_format='.3f', log_strategy='AVERAGE')  
         runner.running_stats.add(
