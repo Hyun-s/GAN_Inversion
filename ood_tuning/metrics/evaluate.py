@@ -50,7 +50,7 @@ class BaseDataset(Dataset):
 
     def load_image(self,img_path):
         image = cv2.imread(img_path)
-        image_target = torch.from_numpy(preprocess(image[np.newaxis,:,:,:], channel_order='BGR')) # torch_tensor, -1~1, RGB, BCHW
+        image_target = torch.from_numpy(preprocess(image[np.newaxis,:,:,:], channel_order='BGR')).to(self.device) # torch_tensor, -1~1, RGB, BCHW
         image_target = torch.squeeze(image_target)
 
         target = image_target.clone()
