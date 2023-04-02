@@ -93,7 +93,7 @@ def extract(csv_path,key,arcface_path,device, batch_size=64):
     arc_feat = arc_feat.numpy()
     return features, arc_feat
 
-def compute_psnr_ssim():
+# def compute_psnr_ssim():
 
 
 
