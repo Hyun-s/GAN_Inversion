@@ -43,6 +43,7 @@ class BaseDataset(Dataset):
         self.target_transform = target_transform
         self.resolution = resolution
         self.key = key
+        self.device = device
 
     def __len__(self):
         return len(self.meta_csv)
@@ -65,15 +66,15 @@ class BaseDataset(Dataset):
 def extract_feature(model, images):
     features = model(images, output_logits=False)
     features = features.detach().cpu()
-    assert features.ndim == 2 and (features.shape[1] == 2048)
+    assert features.ndim == 2 and (features.shape[1] == 2048 or features.shape[1] == 512)
     return features
 
 
-def extract(csv_path,key,arcface_path,batch_size=64):
-    dataset = BaseDataset(csv_path,key)
+def extract(csv_path,key,arcface_path,batch_size=64,device):
+    dataset = BaseDataset(csv_path,key,device)
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
     inception_model = inception.build_inception_model().to(device)
-    arcface = Backbone(112, num_layers=50, mode='ir_se', drop_ratio=0.4, affine=True)
+    arcface = Backbone(112, num_layers=50, mode='ir_se', drop_ratio=0.4, affine=True).to
     arcface = load_state_dict(torch.load(arcface_path))
     features = []
     arc_feat = []
@@ -85,7 +86,10 @@ def extract(csv_path,key,arcface_path,batch_size=64):
             arc_feat.append(extract_feature(arcface,x))
     features = torch.cat(features)
     features = features.numpy()
-    return features
+
+    arc_feat = torch.cat(arc_feat)
+    arc_feat = arc_feat.numpy()
+    return features, arc_feat
 
 
 
