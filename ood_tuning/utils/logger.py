@@ -55,7 +55,7 @@ class Logger(object):
     def __init__(self,
                  work_dir=DEFAULT_WORK_DIR,
                  logfile_name='log.txt',
-                 logger_name='logger_'):
+                 logger_name='logger'):
         """Initializes the logger.
 
         Args:
@@ -64,6 +64,7 @@ class Logger(object):
             logger_name: Unique name for the logger. (default: `logger`)
         """
         self.logger = logging.getLogger(logger_name)
+        self.logger.propagate = 0
         if self.logger.hasHandlers():  # Already existed
             raise SystemExit(f'Logger `{logger_name}` has already existed!\n'
                              f'Please use another name, or otherwise the '
