@@ -3,10 +3,9 @@ from tqdm import tqdm
 import os
 import pandas as pd
 import cv2
+import torchvision.transforms as T
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
-from torch.utils.data.dataloader import default_collate
-
 from BDInvert.image_tools import *
 import numpy as np
 import scipy
@@ -66,29 +65,29 @@ class BaseDataset(Dataset):
 def extract_feature(model, images):
     features = model(images, output_logits=False)
     features = features.detach().cpu()
-    assert features.ndim == 2 and features.shape[1] == 2048
+    assert features.ndim == 2 and (features.shape[1] == 2048)
     return features
 
 
-def extract(csv_path,key):
+def extract(csv_path,key,arcface_path,batch_size=64):
     dataset = BaseDataset(csv_path,key)
-    dataloader = DataLoader(dataset, \
-                            batch_size=64, \ 
-                            shuffle=False, \
-                            collate_fn=lambda x: default_collate(x).to(device))
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
     inception_model = inception.build_inception_model().to(device)
-
+    arcface = Backbone(112, num_layers=50, mode='ir_se', drop_ratio=0.4, affine=True)
+    arcface = load_state_dict(torch.load(arcface_path))
     features = []
+    arc_feat = []
     with torch.no_grad():
         for batch in tqdm(dataloader):
             batch = batch.to(device)
             features.append(extract_feature(inception_model,batch))
+            x = T.Resize(112)(batch)
+            arc_feat.append(extract_feature(arcface,x))
     features = torch.cat(features)
     features = features.numpy()
     return features
 
 
-Backbone(112, num_layers=50, mode='ir_se', drop_ratio=0.4, affine=True)
 
 # Backbone(112, num_layers=50, mode='ir_se', drop_ratio=0.4, affine=True)
 

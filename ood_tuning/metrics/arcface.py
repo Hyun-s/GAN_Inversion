@@ -48,7 +48,7 @@ class Backbone(Module):
                                            bottleneck.stride))
         self.body = Sequential(*modules)
 
-    def forward(self, x):
+    def forward(self, x, output_logits=False):
         x = self.input_layer(x)
         x = self.body(x)
         x = self.output_layer(x)

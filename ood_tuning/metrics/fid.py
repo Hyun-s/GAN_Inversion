@@ -48,7 +48,10 @@ def compute_fid(fake_features, real_features):
     Returns:
         A real number, suggesting the FID value.
     """
-
+    if not isinstance(fake_features,np.ndarray):
+        fake_features = fake_features.detach().cpu().numpy()
+    if not isinstance(real_features,np.ndarray):
+        real_features = real_features.detach().cpu().numpy()
     m_f = np.mean(fake_features, axis=0)
     C_f = np.cov(fake_features, rowvar=False)
     m_r = np.mean(real_features, axis=0)
