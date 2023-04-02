@@ -5,6 +5,8 @@ import pandas as pd
 import cv2
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
+from torch.utils.data.dataloader import default_collate
+
 from BDInvert.image_tools import *
 import numpy as np
 import scipy
@@ -70,7 +72,10 @@ def extract_feature(model, images):
 
 def extract(csv_path,key):
     dataset = BaseDataset(csv_path,key)
-    dataloader = DataLoader(dataset, batch_size=64, shuffle=False)
+    dataloader = DataLoader(dataset, \
+                            batch_size=64, \ 
+                            shuffle=False, \
+                            collate_fn=lambda x: default_collate(x).to(device))
     inception_model = inception.build_inception_model().to(device)
 
     features = []
