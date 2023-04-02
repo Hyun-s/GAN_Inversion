@@ -13,6 +13,7 @@ from metrics.arcface import Backbone
 from metrics.kid import compute_kid
 from metrics.fid import compute_fid
 
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 class PSNR:
     """Peak Signal to Noise Ratio
@@ -70,12 +71,12 @@ def extract_feature(model, images):
 def extract(csv_path,key):
     dataset = BaseDataset(csv_path,key)
     dataloader = DataLoader(dataset, batch_size=64, shuffle=False)
-    inception_model = inception.build_inception_model().cuda()
+    inception_model = inception.build_inception_model().to(device)
 
     features = []
     with torch.no_grad():
         for batch in tqdm(dataloader):
-            batch = batch.cuda()
+            batch = batch.to(device)
             features.append(extract_feature(inception_model,batch))
     features = torch.cat(features)
     features = features.numpy()
@@ -87,4 +88,3 @@ Backbone(112, num_layers=50, mode='ir_se', drop_ratio=0.4, affine=True)
 # Backbone(112, num_layers=50, mode='ir_se', drop_ratio=0.4, affine=True)
 
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
