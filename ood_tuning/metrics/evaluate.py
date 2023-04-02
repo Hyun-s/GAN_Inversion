@@ -8,9 +8,10 @@ from torch.utils.data import DataLoader
 from BDInvert.image_tools import *
 import numpy as np
 import scipy
-from arcface import Backbone
-from kid import compute_kid
-from fid import compute_fid
+
+from metrics.arcface import Backbone
+from metrics.kid import compute_kid
+from metrics.fid import compute_fid
 
 
 class PSNR:
@@ -82,3 +83,8 @@ def extract(csv_path,key):
 
 
 Backbone(112, num_layers=50, mode='ir_se', drop_ratio=0.4, affine=True)
+
+# Backbone(112, num_layers=50, mode='ir_se', drop_ratio=0.4, affine=True)
+
+
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
