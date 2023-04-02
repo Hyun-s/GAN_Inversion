@@ -77,6 +77,7 @@ def extract(csv_path,key,arcface_path,device, batch_size=64):
     inception_model = inception.build_inception_model().to(device)
     arcface = Backbone(112, num_layers=50, mode='ir_se', drop_ratio=0.4, affine=True)
     arcface.load_state_dict(torch.load(arcface_path,map_location=device))
+    arcface.to(device)
     features = []
     arc_feat = []
     with torch.no_grad():
@@ -91,6 +92,8 @@ def extract(csv_path,key,arcface_path,device, batch_size=64):
     arc_feat = torch.cat(arc_feat)
     arc_feat = arc_feat.numpy()
     return features, arc_feat
+
+def compute_psnr_ssim():
 
 
 
