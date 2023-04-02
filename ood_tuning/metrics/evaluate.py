@@ -75,8 +75,8 @@ def extract(csv_path,key,arcface_path,device, batch_size=64):
     dataset = BaseDataset(csv_path,key,device)
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
     inception_model = inception.build_inception_model().to(device)
-    arcface = Backbone(112, num_layers=50, mode='ir_se', drop_ratio=0.4, affine=True).to
-    arcface = load_state_dict(torch.load(arcface_path))
+    arcface = Backbone(112, num_layers=50, mode='ir_se', drop_ratio=0.4, affine=True)
+    arcface.load_state_dict(torch.load(arcface_path,map_location=device))
     features = []
     arc_feat = []
     with torch.no_grad():
