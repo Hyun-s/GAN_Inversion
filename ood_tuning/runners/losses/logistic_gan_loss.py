@@ -191,15 +191,15 @@ class LogisticGANLoss(object):
                 fake_scores = D(image_rec, label=labels, **runner.D_kwargs_train)
                 adv_loss = F.softplus(-fake_scores).mean()
             else:
-                adv_loss = 0
+                adv_loss = torch.tensor(0)
             reg_loss = reg_recon_loss + self.lambda_adv*adv_loss
         else:
-            reg_loss = 0
+            reg_loss = torch.tensor(0)
         # Intermediate Loss
         if self.lambda_inter > 0:
             inter_loss = self.intermediate_loss(inter, image_rec, image_origin)
         else:    
-            inter_loss = 0
+            inter_loss = torch.tensor(0)
         g_loss = recon_loss + self.lambda_reg*reg_loss + self.lambda_inter*inter_loss
 
 
