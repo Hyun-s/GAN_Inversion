@@ -70,7 +70,7 @@ def extract_feature(model, images):
     return features
 
 
-def extract(csv_path,key,arcface_path,batch_size=64,device):
+def extract(csv_path,key,arcface_path,device, batch_size=64):
     dataset = BaseDataset(csv_path,key,device)
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
     inception_model = inception.build_inception_model().to(device)
