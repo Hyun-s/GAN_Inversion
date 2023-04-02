@@ -206,6 +206,7 @@ class RichLogger(object):
             logger_name: Unique name for the logger. (default: `logger`)
         """
         self.logger = logging.getLogger(logger_name)
+        self.logger.propagate = 0
         if self.logger.hasHandlers():  # Already existed
             raise SystemExit(f'Logger `{logger_name}` has already existed!\n'
                              f'Please use another name, or otherwise the '
