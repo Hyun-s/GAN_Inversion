@@ -3,6 +3,7 @@ from tqdm import tqdm
 import os
 import pandas as pd
 import cv2
+import torch
 import torchvision.transforms as T
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
