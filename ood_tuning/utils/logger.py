@@ -55,7 +55,7 @@ class Logger(object):
     def __init__(self,
                  work_dir=DEFAULT_WORK_DIR,
                  logfile_name='log.txt',
-                 logger_name='logger'):
+                 logger_name='logger_'):
         """Initializes the logger.
 
         Args:
