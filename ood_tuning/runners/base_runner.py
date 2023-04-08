@@ -256,7 +256,10 @@ class BaseRunner(object):
         """Sets the `train/val` mode for all models."""
         self.mode = mode
         for name in self.models:
-            self.set_model_mode(name, mode)
+            if name == 'encoder':
+                self.set_model_mode(name,'eval')
+            else:
+                self.set_model_mode(name, mode)
 
     def train_step(self, data, **train_kwargs):
         """Executes one training step."""
