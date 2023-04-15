@@ -2,6 +2,7 @@
 """Defines loss functions."""
 
 import torch
+import torchvision.transforms as transforms
 import numpy as np
 import torch.nn.functional as F
 from models.stylegan2_generator import UpsamplingLayer
@@ -158,16 +159,17 @@ class LogisticGANLoss(object):
         # TODO: Use random labels.
         G = runner.models['generator']
         D = runner.models['discriminator']
+        if 'encoder' in runner.models.keys():
+            E = runner.models['encoder']
+            transform = transforms.Compose([
+				transforms.Resize((256, 256)),
+				transforms.ToTensor(),
+				transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])])
+            wp = E(data['image'])
         batch_size = data['image'].shape[0]
         labels = data.get('label', None)
 
         # TODO params to args
-
-        
-
-        latents = torch.randn(batch_size, runner.z_space_dim).cuda()
-        # out = G(latents, label=labels, **runner.G_kwargs_train)
-
         f = data['basecode'].cuda()
         wp = data['detailcode'].cuda()
 

@@ -1,5 +1,7 @@
 # python3.7
 """Collects all available models together."""
+import argparse
+import torch
 
 from .model_zoo import MODEL_ZOO
 from .pggan_generator import PGGANGenerator
@@ -8,15 +10,19 @@ from .stylegan_generator import StyleGANGenerator
 from .stylegan_discriminator import StyleGANDiscriminator
 from .stylegan2_generator import StyleGAN2Generator
 from .stylegan2_discriminator import StyleGAN2Discriminator
+from .encoder.psp import pSp
+from .encoder.encoders.psp_encoders import Encoder4Editing
 
 __all__ = [
     'MODEL_ZOO', 'PGGANGenerator', 'PGGANDiscriminator', 'StyleGANGenerator',
     'StyleGANDiscriminator', 'StyleGAN2Generator', 'StyleGAN2Discriminator',
-    'build_generator', 'build_discriminator', 'build_model', 'parse_gan_type'
+    'build_generator', 'build_discriminator', 'build_encoder',
+    'build_model', 'parse_gan_type'
 ]
 
 _GAN_TYPES_ALLOWED = ['pggan', 'stylegan', 'stylegan2']
-_MODULES_ALLOWED = ['generator', 'discriminator']
+_MODULES_ALLOWED = ['generator', 'discriminator','encoder']
+_ENCODER_TYPES_ALLOWED = ['e4e']
 
 
 def build_generator(gan_type, resolution, **kwargs):
@@ -68,6 +74,38 @@ def build_discriminator(gan_type, resolution, **kwargs):
         return StyleGAN2Discriminator(resolution, **kwargs)
     raise NotImplementedError(f'Unsupported GAN type `{gan_type}`!')
 
+def build_encoder(encoder_type, **kwargs):
+    """Builds encoder.
+
+    Args:
+        encoder_type: ENCODER type to which the generator belong.
+        **kwargs: Additional arguments to build the generator.
+
+    Raises:
+        ValueError: If the `gan_type` is not supported.
+        NotImplementedError: If the `gan_type` is not implemented.
+    """
+    if encoder_type not in _ENCODER_TYPES_ALLOWED:
+        raise ValueError(f'Invalid encoder type: `{encoder_type}`!\n'
+                         f'Types allowed: {_ENCODER_TYPES_ALLOWED}.')
+
+    if encoder_type == 'e4e':
+        ckpt = torch.load(model_path)
+        opts = argparse.Namespace(**ckpt['opts'])
+        e4e = Encoder4Editing(50, 'ir_se', opts)
+        e4e_dict = {k.replace('encoder.', ''): v for k, v in ckpt['state_dict'].items() if k.startswith('encoder.')}
+        e4e.load_state_dict(e4e_dict)
+        e4e.eval()
+        e4e = e4e.to(device)
+        latent_avg = ckpt['latent_avg'].to(device)
+
+        def add_latent_avg(model, inputs, outputs):
+            return outputs + latent_avg.repeat(outputs.shape[0], 1, 1)
+
+        e4e.register_forward_hook(add_latent_avg)
+
+    raise NotImplementedError(f'Unsupported encoder type `{encoder_type}`!')
+
 
 def build_model(gan_type, module, resolution, **kwargs):
     """Builds a GAN module (generator/discriminator/etc).
@@ -90,6 +128,8 @@ def build_model(gan_type, module, resolution, **kwargs):
         return build_generator(gan_type, resolution, **kwargs)
     if module == 'discriminator':
         return build_discriminator(gan_type, resolution, **kwargs)
+    if module == 'encoder':
+        return build_encoder(encoder_type, **kwargs)
     raise NotImplementedError(f'Unsupported module `{module}`!')
 
 

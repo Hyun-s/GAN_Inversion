@@ -59,6 +59,10 @@ modules = dict(
                           trunc_psi=1.0, trunc_layers=0, randomize_noise=False),
         kwargs_val=dict(trunc_psi=1.0, trunc_layers=0, randomize_noise=False),
         g_smooth_img=1,
+    ),
+    encoder=dict(
+        model=dict(encoder_type=encoder_type),
+        model_path = '/content/e4e_ffhq_encode.pt'
     )
 )
 
