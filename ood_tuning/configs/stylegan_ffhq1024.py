@@ -6,6 +6,7 @@ and `num_workers`.
 """
 runner_type = 'StyleGANRunner'
 gan_type = 'stylegan2'
+encoder_type = 'e4e'
 resolution = 1024
 batch_size = 8
 val_batch_size = 8
