@@ -5,7 +5,7 @@ import torch
 from torch import nn
 from .encoders import psp_encoders
 from .stylegan2.model import Generator
-from configs.paths_config import model_paths
+# from configs.paths_config import model_paths
 
 
 def get_keys(d, name):
@@ -38,7 +38,7 @@ class pSp(nn.Module):
             raise Exception('{} is not a valid encoders'.format(self.opts.encoder_type))
         return encoder
 
-    def load_weights(self):
+    def load_weights(self,model_paths):
         if self.opts.checkpoint_path is not None:
             print('Loading e4e over the pSp framework from checkpoint: {}'.format(self.opts.checkpoint_path))
             ckpt = torch.load(self.opts.checkpoint_path, map_location='cpu')
