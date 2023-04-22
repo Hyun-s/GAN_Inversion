@@ -10,7 +10,7 @@ from .stylegan_generator import StyleGANGenerator
 from .stylegan_discriminator import StyleGANDiscriminator
 from .stylegan2_generator import StyleGAN2Generator
 from .stylegan2_discriminator import StyleGAN2Discriminator
-from encoder.psp import pSp
+from .encoder.psp import pSp
 from .encoder.encoders.psp_encoders import Encoder4Editing
 
 __all__ = [
