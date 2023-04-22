@@ -43,7 +43,7 @@ def parse_args():
     parser.add_argument('--d_fixed', type=bool, default=False,
                         help='Fix discriminator in training. (default: '
                              '%(default)s)')
-    parser.add_argument('--local_rank', type=int, default=0,
+    parser.add_argument('--local-rank', type=int, default=0,
                         help='Rank of the current node. (default: %(default)s)')
     parser.add_argument('--options', nargs='+', action=DictAction,
                         help='arguments in dict')
