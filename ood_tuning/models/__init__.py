@@ -11,7 +11,7 @@ from .stylegan_discriminator import StyleGANDiscriminator
 from .stylegan2_generator import StyleGAN2Generator
 from .stylegan2_discriminator import StyleGAN2Discriminator
 from encoder.psp import pSp
-from encoder.encoders.psp_encoders import Encoder4Editing
+from .encoder.encoders.psp_encoders import Encoder4Editing
 
 __all__ = [
     'MODEL_ZOO', 'PGGANGenerator', 'PGGANDiscriminator', 'StyleGANGenerator',
@@ -107,9 +107,9 @@ def build_encoder(encoder_type, **kwargs):
             return outputs + latent_avg.repeat(outputs.shape[0], 1, 1)
 
         e4e.register_forward_hook(add_latent_avg)
-
+        return e4e
     raise NotImplementedError(f'Unsupported encoder type `{encoder_type}`!')
-
+    
 
 def build_model(gan_type, module, resolution, **kwargs):
     """Builds a GAN module (generator/discriminator/etc).
