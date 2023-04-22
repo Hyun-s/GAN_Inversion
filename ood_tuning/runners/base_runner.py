@@ -165,6 +165,7 @@ class BaseRunner(object):
         opt_config = dict()
         for module, module_config in self.config.modules.items():
             model_config = module_config['model']
+            print(module,' loads..')
             self.models[module] = build_model(module=module, **model_config)
             self.models[module].cuda()
             opt_config[module] = module_config.get('opt', None)
