@@ -62,7 +62,7 @@ modules = dict(
         g_smooth_img=1,
     ),
     encoder=dict(
-        model=dict(encoder_type=encoder_type),
+        model=dict(gan_type=encoder_type, resolution=resolution),
         model_path = '/content/e4e_ffhq_encode.pt'
     )
 )
