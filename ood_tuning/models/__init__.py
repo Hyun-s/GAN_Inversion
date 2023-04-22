@@ -133,7 +133,7 @@ def build_model(gan_type, module, resolution, **kwargs):
     if module == 'discriminator':
         return build_discriminator(gan_type, resolution, **kwargs)
     if module == 'encoder':
-        return build_encoder(encoder_type, **kwargs)
+        return build_encoder(gan_type, **kwargs)
     raise NotImplementedError(f'Unsupported module `{module}`!')
 
 
