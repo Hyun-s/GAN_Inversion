@@ -148,8 +148,7 @@ class Encoder4Editing(Module):
         self.coarse_ind = 3
         self.middle_ind = 7
         self.transform = transforms.Compose([
-                transforms.Resize((256, 256)),
-                transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])])
+                transforms.Resize((256, 256))])
 
         for i in range(self.style_count):
             if i < self.coarse_ind:
