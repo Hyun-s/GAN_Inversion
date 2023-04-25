@@ -90,10 +90,6 @@ def build_encoder(encoder_type, **kwargs):
                          f'Types allowed: {_ENCODER_TYPES_ALLOWED}.')
 
     if encoder_type == 'e4e':
-        transform = transforms.Compose([
-				transforms.Resize((256, 256)),
-				transforms.ToTensor(),
-				transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])])
         ckpt = torch.load(model_path)
         opts = argparse.Namespace(**ckpt['opts'])
         e4e = Encoder4Editing(50, 'ir_se', opts)
