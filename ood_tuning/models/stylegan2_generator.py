@@ -175,7 +175,7 @@ class StyleGAN2Generator(nn.Module):
                 use_f=None,
                 use_wp=None,
                 **_unused_kwargs):
-        if use_f and use_wp:
+        if use_f!=None and use_wp!=None:
             if basecode_layer == None:
                 raise ValueError(f'It must need basecode_layer!')
             synthesis_results = self.synthesis(wp=use_wp,
@@ -183,7 +183,7 @@ class StyleGAN2Generator(nn.Module):
                                                basecode_layer=basecode_layer,
                                                randomize_noise=randomize_noise)
             return synthesis_results
-        elif use_wp:
+        elif use_wp!=None:
             synthesis_results = self.synthesis(wp=use_wp,
                                                basecode=use_f,
                                                basecode_layer=basecode_layer,
