@@ -200,9 +200,7 @@ class LogisticGANLoss(object):
         else:
             adv_loss = torch.tensor(0)
         reg_loss = reg_recon_loss + self.lambda_adv*adv_loss
-        else:
-            reg_loss = torch.tensor(0)
-            
+
         # Intermediate Loss
         if self.lambda_inter > 0:
             inter_loss = self.intermediate_loss(inter, image_rec, image_origin)
