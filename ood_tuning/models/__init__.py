@@ -104,7 +104,8 @@ def build_encoder(encoder_type, **kwargs):
         def add_latent_avg(model, inputs, outputs):
             return outputs + latent_avg.repeat(outputs.shape[0], 1, 1).cuda.current_device()
 
-        e4e.register_forward_hook(add_latent_avg)
+        e4e.register_forward_hook(add_latent_avg).cuda(
+                    torch.cuda.current_device(), non_blocking=True)
         return e4e
     raise NotImplementedError(f'Unsupported encoder type `{encoder_type}`!')
     

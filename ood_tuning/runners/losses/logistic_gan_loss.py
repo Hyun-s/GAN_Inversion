@@ -169,8 +169,10 @@ class LogisticGANLoss(object):
             f = None
             basecode_layer = None
         else:
-            f = data['basecode'].cuda.current_device()
-            wp = data['detailcode'].cuda.current_device()
+            f = data['basecode'].cuda(
+                    torch.cuda.current_device(), non_blocking=True)
+            wp = data['detailcode'].cuda(
+                    torch.cuda.current_device(), non_blocking=True)
             basecode_layer = 'x03'
 
         out = G(z=None,use_wp=wp,use_f=f,basecode_layer=basecode_layer,**runner.G_kwargs_train)
