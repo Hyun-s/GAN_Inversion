@@ -92,6 +92,7 @@ class LogisticGANLoss(object):
         """Computes loss for discriminator."""
         G = runner.models['generator']
         D = runner.models['discriminator']
+        E = runner.models['encoder']
         reals = self.preprocess_image(data['image'])
         reals.requires_grad = True
         labels = data.get('label', None)
@@ -159,21 +160,20 @@ class LogisticGANLoss(object):
         # TODO: Use random labels.
         G = runner.models['generator']
         D = runner.models['discriminator']
-        if 'encoder' in runner.models.keys():
-            E = runner.models['encoder']
-            transform = transforms.Compose([
-				transforms.Resize((256, 256)),
-				transforms.ToTensor(),
-				transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])])
-            wp = E(data['image'])
+        
         batch_size = data['image'].shape[0]
         labels = data.get('label', None)
+        if 'encoder' in runner.models.keys():
+            E = runner.models['encoder']
+            wp = E(data['image'])
+            f = None
+            basecode_layer = None
+        else:
+            f = data['basecode'].cuda()
+            wp = data['detailcode'].cuda()
+            basecode_layer = 'x03'
 
-        # TODO params to args
-        f = data['basecode'].cuda()
-        wp = data['detailcode'].cuda()
-
-        out = G(z=None,use_wp=wp,use_f=f,basecode_layer='x03',**runner.G_kwargs_train)
+        out = G(z=None,use_wp=wp,use_f=f,basecode_layer=basecode_layer,**runner.G_kwargs_train)
         
         image_origin = data['image']
         image_first_recon = data['first_recon'] # todo

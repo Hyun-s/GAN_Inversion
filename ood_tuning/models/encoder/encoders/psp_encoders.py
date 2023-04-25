@@ -147,6 +147,9 @@ class Encoder4Editing(Module):
         self.style_count = 2 * log_size - 2
         self.coarse_ind = 3
         self.middle_ind = 7
+        self.transform = transforms.Compose([
+                transforms.Resize((256, 256)),
+                transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])])
 
         for i in range(self.style_count):
             if i < self.coarse_ind:
@@ -171,6 +174,8 @@ class Encoder4Editing(Module):
         print('Changed progressive stage to: ', new_stage)
 
     def forward(self, x):
+        if x.shape[2] != 256:
+            x = self.transform(x)
         x = self.input_layer(x)
 
         modulelist = list(self.body._modules.values())
