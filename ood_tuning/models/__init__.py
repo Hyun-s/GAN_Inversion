@@ -88,7 +88,9 @@ def build_encoder(encoder_type, **kwargs):
     if encoder_type not in _ENCODER_TYPES_ALLOWED:
         raise ValueError(f'Invalid encoder type: `{encoder_type}`!\n'
                          f'Types allowed: {_ENCODER_TYPES_ALLOWED}.')
-
+    print('-'*50)
+    print(**kwargs)
+    print('-'*50)
     if encoder_type == 'e4e':
         ckpt = torch.load(model_path)
         opts = argparse.Namespace(**ckpt['opts'])
