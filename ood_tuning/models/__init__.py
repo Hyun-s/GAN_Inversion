@@ -98,8 +98,8 @@ def build_encoder(encoder_type, **kwargs):
         e4e_dict = {k.replace('encoder.', ''): v for k, v in ckpt['state_dict'].items() if k.startswith('encoder.')}
         e4e.load_state_dict(e4e_dict)
         e4e.eval()
-        e4e = e4e.to(device)
-        latent_avg = ckpt['latent_avg'].to(device)
+        e4e = e4e
+        latent_avg = ckpt['latent_avg']
 
         def add_latent_avg(model, inputs, outputs):
             return outputs + latent_avg.repeat(outputs.shape[0], 1, 1)
