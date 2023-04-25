@@ -102,7 +102,7 @@ def build_encoder(encoder_type, **kwargs):
         latent_avg = ckpt['latent_avg']
 
         def add_latent_avg(model, inputs, outputs):
-            return outputs + latent_avg.repeat(outputs.shape[0], 1, 1)
+            return outputs + latent_avg.repeat(outputs.shape[0], 1, 1).cuda.current_device()
 
         e4e.register_forward_hook(add_latent_avg)
         return e4e
