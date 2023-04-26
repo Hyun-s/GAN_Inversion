@@ -213,14 +213,14 @@ class LogisticGANLoss(object):
         runner.running_stats.update({'image_origin':image_origin})
         runner.running_stats.update({'g_loss': g_loss.item()})
         
-        runner.running_stats.update({'mse_loss': mse_loss.item()})
-        runner.running_stats.update({'lpips_loss': lpips_loss.item()})
+        runner.running_stats.update({'mse_loss': self.lambda_mse*mse_loss.item()})
+        runner.running_stats.update({'lpips_loss': self.lambda_recon*lpips_loss.item()})
 
 
         runner.running_stats.update({'reg_loss': reg_loss.item()})
-        runner.running_stats.update({'reg_recon_loss': reg_recon_loss.item()})
-        runner.running_stats.update({'reg_adv_loss': adv_loss.item()})
+        runner.running_stats.update({'reg_recon_loss': self.lambda_reg*reg_recon_loss.item()})
+        runner.running_stats.update({'reg_adv_loss': self.lambda_adv*adv_loss.item()})
 
-        runner.running_stats.update({'inter_loss': inter_loss.item()})
+        runner.running_stats.update({'inter_loss': self.lambda_inter*inter_loss.item()})
 
         return g_loss
