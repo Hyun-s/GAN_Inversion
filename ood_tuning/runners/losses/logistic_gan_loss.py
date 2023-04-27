@@ -202,13 +202,16 @@ class LogisticGANLoss(object):
         reg_loss = reg_recon_loss + self.lambda_adv*adv_loss
 
         # Intermediate Loss
+        use_all = False
         if self.lambda_inter > 0:
             inter_loss = 0
-            for inter_ in [7,9,11,13,15]:
-                # inter = out[f'rgb{self.inter_out}']
-                inter = out[f'rgb{inter_}']
-                inter_loss += self.intermediate_loss(inter, image_rec, image_origin)
-                # tmp+= inter+
+            inter = out[f'rgb{self.inter_out}']
+            inter_loss += self.intermediate_loss(inter, image_rec, image_origin)
+            if use_all:
+                for inter_ in [7,9,11,13,15]:
+                    inter_loss = 0
+                    inter = out[f'rgb{inter_}']
+                    inter_loss += self.intermediate_loss(inter, image_rec, image_origin)
         else:    
             inter_loss = torch.tensor(0)
         g_loss = recon_loss + self.lambda_reg*reg_loss + self.lambda_inter*inter_loss
